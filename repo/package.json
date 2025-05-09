@@ -24,8 +24,10 @@
   "dependencies": {
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.1",
+    "@types/ws": "^8.18.1",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "ws": "^8.18.2"
   }
 }
