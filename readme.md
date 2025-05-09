@@ -16,7 +16,7 @@ A minimal Riverside.fm clone (version 1) built using WebRTC, MediaRecorder, WebS
 
 ## 🧱 Tech Stack
 
-- **Frontend**: React, WebRTC, MediaRecorder, Socket.IO-client
+- **Frontend**: React, WebRTC, MediaRecorder, Websocket
 - **Backend**: Node.js, Express, ws, AWS SDK
 - **Storage**: Amazon S3
 - **Database**: MongoDB (for sessions/users - optional in v1)
