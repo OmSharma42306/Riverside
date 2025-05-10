@@ -1,12 +1,17 @@
-import { useState } from 'react'
+import { Routes,Route } from 'react-router-dom'
+import Sender from './components/Sender';
+import Receiver from './components/Receiver';
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  
   return (
     <>
-     Hi...
+    <Routes>
+    <Route path='/sender' element={<Sender/>}></Route>  
+    <Route path='/receiver' element={<Receiver/>}></Route>      
+    </Routes>   
+    
     </>
   )
 }
