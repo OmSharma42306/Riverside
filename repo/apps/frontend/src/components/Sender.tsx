@@ -3,12 +3,16 @@ import { useEffect, useState } from "react"
 export default function Sender(){
     const [socket,setSocket] = useState<WebSocket>();
     const [roomId,setRoomId] = useState<string>("");
-
-    const pc = new RTCPeerConnection();
+    const [pc,setPc] = useState<RTCPeerConnection | null>();
+    
     
     async function handleRtc(){
+        const pc = new RTCPeerConnection();
+        setPc(pc)
+
         console.log("Called function for rtc");
         const offer = await pc.createOffer();
+        console.log("OFFER",offer);
         await pc.setLocalDescription(offer);
         socket?.send(JSON.stringify({type:"create-offer",sdp:offer}));
     }
@@ -32,15 +36,27 @@ export default function Sender(){
             const msg = JSON.parse(event.data);
             console.log(msg)
             if(msg.type === "receiver-remote-description"){
-                pc.setRemoteDescription(msg.sdp);
+
+                pc?.setRemoteDescription(msg.sdp);
+                console.log("Receiver remote description set!")
+                socket.send(JSON.stringify({hi:"hh"}))
             }
         }
 
     }
+    
+    if(pc){
 
-    if(socket){
-        handleRtc();
+    
+    pc.onnegotiationneeded = async () =>{
+        console.log("onnegotiated")
+        const offer = await pc.createOffer();
+        console.log("ONNEGO",offer);
+        await pc.setLocalDescription(offer);
+        socket?.send(JSON.stringify({type:"create-offer",sdp:offer}))
+
     }
+}
     
     return <div>
         <h1>Hi from Sender.</h1>
@@ -48,6 +64,9 @@ export default function Sender(){
             setRoomId(e.target.value);
         }} />
         <button onClick={init}>Go</button>
+
+        {socket?<button onClick={handleRtc}>Handle RTC</button> :""}
+        
 
     </div>
 }

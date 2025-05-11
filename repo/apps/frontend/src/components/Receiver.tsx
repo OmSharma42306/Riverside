@@ -1,49 +1,49 @@
 import { useEffect, useState } from "react"
 
+
 export default function Receiver(){
     const [socket,setSocket] = useState<WebSocket>();
-    
+    const [roomId,setRoomId] = useState<string>("");
+    const [pc,setPc] = useState<RTCPeerConnection | null>();
 
-    useEffect(()=>{
-        const socket = new WebSocket('ws://localhost:8080');
+    async function init(){
+    const socket = new WebSocket('ws://localhost:8080');
 
-        socket.onopen = () =>{
-            console.log("Socket Connected!");
-            setSocket(socket);
+    socket.onopen = () =>{
+        console.log("Socket Connected!");
+        socket.send(JSON.stringify({type:"receiver",roomId:roomId}))
+        setSocket(socket);
         }
-
-        let pc : RTCPeerConnection | null = null;
+        const pc = new RTCPeerConnection();
+        setPc(pc);
+    }
+    if(socket){
+        
         socket.onmessage = async (event:any) =>{
             const msg = JSON.parse(event.data);
-            if(msg.type === "create-offer"){
-                pc = new RTCPeerConnection();
-                pc.setRemoteDescription(msg.sdp);
-                
-                
-        
-                // Create an Answer.
-                const answer = await pc.createAnswer();    
-                const sdp = await pc.setLocalDescription(answer);
-
-                socket.send(JSON.stringify({type:"create-answer",sdp:sdp}))
-        
-            }else if(msg.type === ""){
-
+            if(msg.type === "sender-remote-description"){
+                pc?.setRemoteDescription(msg.sdp);
+                console.log(msg.sdp);
+                console.log("remote description set")
+                const answer = await pc?.createAnswer();
+                console.log("Created answer",answer)
+                await pc?.setLocalDescription(answer);
+                console.log("Answer set local description")
+            socket?.send(JSON.stringify({type:'create-answer',sdp:answer}));
             }
         }
-        
-        
 
-        return () =>{
-            socket.close(); // Cleanup the Connection On Mount.
-        }
-        
-    },[socket])
     
+    }
     
-
 
     return <div>
         <h1>Hi from Receiver</h1>
+        
+        <input type="text" placeholder="Enter RoomId" onChange={(e)=>{
+            setRoomId(e.target.value);
+        }} />
+
+        <button onClick={init}>Go</button>
     </div>
 }
