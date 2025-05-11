@@ -30,6 +30,9 @@ export default function Receiver(){
                 await pc?.setLocalDescription(answer);
                 console.log("Answer set local description")
             socket?.send(JSON.stringify({type:'create-answer',sdp:answer}));
+            }else if(msg.type === "sender-iceCandidate"){
+                pc?.addIceCandidate(msg.candidate);
+                console.log("candidate added to receiver");
             }
         }
 

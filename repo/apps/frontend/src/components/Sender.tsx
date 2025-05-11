@@ -40,6 +40,9 @@ export default function Sender(){
                 pc?.setRemoteDescription(msg.sdp);
                 console.log("Receiver remote description set!")
                 socket.send(JSON.stringify({hi:"hh"}))
+            }else if(msg.type === "receiver-iceCandidate"){
+                pc?.addIceCandidate(msg.candidate);
+                console.log("added candidate");
             }
         }
 
@@ -56,7 +59,16 @@ export default function Sender(){
         socket?.send(JSON.stringify({type:"create-offer",sdp:offer}))
 
     }
+
+    pc.onicecandidate = async(event) =>{
+        console.log("Ice candidate function!");
+        if(event.candidate){
+            socket?.send(JSON.stringify({type:"sender-iceCandidate",candidate:event.candidate}));
+        }
+    }
 }
+
+
     
     return <div>
         <h1>Hi from Sender.</h1>
