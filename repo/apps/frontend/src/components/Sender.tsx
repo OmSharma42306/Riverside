@@ -3,23 +3,9 @@ import { useEffect, useState } from "react"
 export default function Sender(){
     const [socket,setSocket] = useState<WebSocket>();
     const [roomId,setRoomId] = useState<string>("");
-    const [pc,setPc] = useState<RTCPeerConnection | null>();
     
-    
-    async function handleRtc(){
-        const pc = new RTCPeerConnection();
-        setPc(pc)
-
-        console.log("Called function for rtc");
-        const offer = await pc.createOffer();
-        console.log("OFFER",offer);
-        await pc.setLocalDescription(offer);
-        socket?.send(JSON.stringify({type:"create-offer",sdp:offer}));
-    }
-    
-    async function init(){
-    console.log("i am triggered!");
-        const socket = new WebSocket('ws://localhost:8080');
+    useEffect(()=>{
+    const socket = new WebSocket('ws://localhost:8080');
 
         socket.onopen = () =>{
             console.log("sockets connected!")
@@ -28,9 +14,11 @@ export default function Sender(){
         }
 
        
-        
-        
-        socket.onmessage = (event:any) =>{
+    },[])
+    async function handleRtc(){
+        if(!socket) return;
+
+        socket.onmessage = async (event:any) =>{
             console.log(event);
             
             const msg = JSON.parse(event.data);
@@ -38,7 +26,7 @@ export default function Sender(){
             if(msg.type === "receiver-remote-description"){
 
                 pc?.setRemoteDescription(msg.sdp);
-                console.log("Receiver remote description set!")
+                
                 socket.send(JSON.stringify({hi:"hh"}))
             }else if(msg.type === "receiver-iceCandidate"){
                 pc?.addIceCandidate(msg.candidate);
@@ -46,12 +34,11 @@ export default function Sender(){
             }
         }
 
-    }
-    
-    if(pc){
 
-    
-    pc.onnegotiationneeded = async () =>{
+
+        const pc = new RTCPeerConnection();
+        
+        pc.onnegotiationneeded = async () =>{
         console.log("onnegotiated")
         const offer = await pc.createOffer();
         console.log("ONNEGO",offer);
@@ -60,13 +47,35 @@ export default function Sender(){
 
     }
 
-    pc.onicecandidate = async(event) =>{
+        console.log("Called function for rtc");
+        
+           pc.onicecandidate = async(event) =>{
         console.log("Ice candidate function!");
         if(event.candidate){
             socket?.send(JSON.stringify({type:"sender-iceCandidate",candidate:event.candidate}));
         }
     }
-}
+
+
+    // sending video
+
+    
+        const stream = await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+        pc?.addTrack(stream.getVideoTracks()[0]);
+    
+
+
+    }
+    
+    async function init(){
+        if(!socket) return;
+    console.log("i am triggered!");
+
+    }
+    
+
+
+
 
 
     

@@ -39,6 +39,22 @@ export default function Receiver(){
     
     }
     
+    if(pc){
+    pc.ontrack = (event) =>{
+        const video = document.createElement('video');
+        document.body.appendChild(video);
+
+        video.srcObject = new MediaStream([event.track]);
+        video.play();
+    }
+
+    pc.onicecandidate = (event) =>{
+        socket?.send(JSON.stringify({type:'receiver-iceCandidate',candidate:event.candidate}))
+    }
+    }
+    
+    
+    
 
     return <div>
         <h1>Hi from Receiver</h1>
