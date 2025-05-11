@@ -1,6 +1,8 @@
 import express from "express";
 import { Request,Response } from "express";
 import jwt from "jsonwebtoken"
+import {SignInSchema,SignUpSchema} from "@repo/common/validation";
+
 const router = express.Router();
 
 
@@ -10,6 +12,10 @@ const name = req.body.name;
 const email = req.body.email;
 const password = req.body.password;
 
+const {success} = SignUpSchema.safeParse({name,email,password});
+if(!success){
+    res.status(400).json({error:"Invalid Format!"});
+}
 try{
     
 
@@ -26,6 +32,13 @@ try{
 router.post('/signin',async(req:Request,res:Response)=>{
     const email = req.body.email;
     const password = req.body.password;
+    const {success} = SignInSchema.safeParse({email,password});
+
+    if(!success){
+        res.json({error:"Invalid Input Format!"})
+        return;
+    }
+    
     try{
 
     }catch(error){
