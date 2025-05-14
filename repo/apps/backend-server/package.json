@@ -14,7 +14,8 @@
     "@repo/typescript-config":"*"
   },
   "devDependencies": {
-    "@repo/common":"*"
+    "@repo/common":"*",
+    "@repo/db":"*"
   },
   "keywords": [],
   "author": "",

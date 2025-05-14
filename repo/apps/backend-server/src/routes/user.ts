@@ -2,7 +2,7 @@ import express from "express";
 import { Request,Response } from "express";
 // import jwt from "jsonwebtoken"
 import {SignInSchema,SignUpSchema} from "@repo/common/validation"
-
+import {prismaClient} from  "@repo/db/prisma"
 const router = express.Router();
 
 
@@ -17,9 +17,17 @@ const {success} = SignUpSchema.safeParse({name,email,password});
 console.log(success)
 if(!success){
     res.status(400).json({error:"Invalid Format!"});
+
 }
 try{
-    
+    const user = await prismaClient.user.create({
+        data:{
+            name: name,
+      email:email,
+      password:password
+        }
+    });
+    console.log(user);
 
 }catch(error){
     res.status(400).json({msg:"Signup Failed!",error});
