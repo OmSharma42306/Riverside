@@ -2,6 +2,7 @@
   "name": "backend-server",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -b",
@@ -10,7 +11,9 @@
 
   },
   "dependencies": {
-    "@repo/typescript-config":"*",
+    "@repo/typescript-config":"*"
+  },
+  "devDependencies": {
     "@repo/common":"*"
   },
   "keywords": [],

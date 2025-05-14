@@ -1,5 +1,5 @@
 import { Request,Response,NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+// import jwt, { JwtPayload } from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -25,7 +25,7 @@ async function authMiddleware(req:authRequest,res:Response,next:NextFunction){
         
         // decode token
         if(token && JWT_SECRET){
-            const decoded= jwt.verify(token,JWT_SECRET) as JwtPayload ;
+            // const decoded= jwt.verify(token,JWT_SECRET) as JwtPayload ;
         }
         
     }catch(error){
