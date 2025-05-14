@@ -1,7 +1,6 @@
 import express from "express";
 import cors from 'cors';
 import bodyParser from "body-parser";
-// import rootRouter from "./api/api"
 import rootRouter from "./api/api"
 import dotenv from "dotenv"
 const PORT = 3001;

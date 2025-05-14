@@ -1,10 +1,19 @@
 import express from "express";
 import { Request,Response } from "express";
-// import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken"
 import {SignInSchema,SignUpSchema} from "@repo/common/validation"
 import {prismaClient} from  "@repo/db/prisma"
+import dotenv from "dotenv"
+import { authMiddleware } from "../middlewares";
 const router = express.Router();
+dotenv.config();
 
+
+const JWT_SECRET = process.env.JWT_SECRET || "";
+
+interface authRequest extends Request{
+    userId? : string;
+}
 
 // signup route
 router.post('/signup',async(req:Request,res:Response)=>{
@@ -28,12 +37,12 @@ try{
         }
     });
     console.log(user);
+    res.json({msg:"User SignUp Successfully!"});
+    return;
 
 }catch(error){
     res.status(400).json({msg:"Signup Failed!",error});
 }
-
-
 
 })
 
@@ -50,6 +59,23 @@ router.post('/signin',async(req:Request,res:Response)=>{
     }
     
     try{
+        const user = await prismaClient.user.findFirst({
+            where:{
+                email:email
+            }
+        });
+        console.log(user);
+        if(!user){
+            res.status(400).json({msg:"User Not Exists!"});
+            return;
+        }
+        const userId = user.id;
+        console.log(userId)
+        console.log("JWT SECRET",JWT_SECRET);
+        const token = await jwt.sign({userId},JWT_SECRET);
+        console.log("hi",token)
+        res.status(200).json({msg:"Successful SignIn!",token:token});
+        return;
 
     }catch(error){
         res.status(400).json({msg:"SignIn Failed!",error});
@@ -57,10 +83,19 @@ router.post('/signin',async(req:Request,res:Response)=>{
 })
 
 // create room
-router.post('/create-room',async(req:Request,res:Response)=>{
+router.post('/create-room',authMiddleware,async(req:authRequest,res:Response)=>{
     const roomId = req.body.roomId;
+    let id  = req.userId;
+    const userId = Number(id);
+    console.log("Hi! omya",id)
+    
     try{
-
+        const user = await prismaClient.user.findFirst({
+            where:{
+                id:userId
+            }
+        })
+        console.log("HELLO",user)
     }catch(error){
         res.status(400).json({msg:"Error Creating Room",error});
     }
