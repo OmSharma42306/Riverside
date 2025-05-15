@@ -1,6 +1,6 @@
-import { Routes,Route } from 'react-router-dom'
-import Sender from './components/Sender';
-import Receiver from './components/Receiver';
+import { Route,Routes } from 'react-router-dom'
+import Sender from '../pages/Sender';
+import Receiver from '../pages/Receiver';
 import './App.css'
 
 function App() {

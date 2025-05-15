@@ -11,7 +11,7 @@ export default function Receiver(){
 
         socket.onopen = () =>{
             console.log("sockets connected!")
-            socket?.send(JSON.stringify({type:"receiver",roomId:'123'}));
+            socket?.send(JSON.stringify({type:"receiver",roomId:'121'}));
             setSocket(socket);
         }
 
