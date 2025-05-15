@@ -14,7 +14,7 @@ import {
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import { useAuth } from '../context/AuthContext';
-import { Recording, Project } from '../types';
+import type { Project,Recording} from '../types';
 
 // Mock data for example
 const mockProjects: Project[] = [
