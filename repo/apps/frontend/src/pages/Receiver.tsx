@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react"
-
+import { useEffect, useRef, useState } from "react"
 
 export default function Receiver(){
+    const videoRef = useRef<HTMLVideoElement>(null);
     const [socket,setSocket] = useState<WebSocket>();
     const [roomId,setRoomId] = useState<string>("");
-    
+    const [stream,setStream] = useState<MediaStream | null>(null);
+    const [recorder,setRecorder] = useState<MediaRecorder | null>(null);
+    const [startRecordings,setStartRecordings] = useState<Boolean>(false);
+        
     useEffect(()=>{
     
         const socket = new WebSocket('ws://localhost:8080');
@@ -50,24 +53,61 @@ export default function Receiver(){
         pc.ontrack = (event) =>{
              console.log("Track received:", event.track);
              console.log("Stream received:", event.streams[0]);
-                  
-            const video = document.createElement("video");
-            video.autoplay = true;
-            video.playsInline = true;
-            video.style.width = "640px";
-            video.style.height = "480px";
-            video.srcObject = event.streams[0];
-            document.body.appendChild(video);
-
+             setStream(event.streams[0])
         }
 
         pc.onicecandidate = (event) =>{
             socket?.send(JSON.stringify({type:'receiver-iceCandidate',candidate:event.candidate}))
                     
         }
-
+        
+      
        
     },[])
+
+       if(videoRef.current){
+                console.log("streamya",stream);
+                videoRef.current.srcObject = stream;
+                videoRef.current.play();
+        }
+    
+        
+            
+        let chunks : any = [];
+
+        function startRecording(){
+            setStartRecordings(true)
+            if(stream){
+            console.log("I AM HERE !")
+            const mediaRecorder = new MediaRecorder(stream,{mimeType:"video/webm"});
+            setRecorder(mediaRecorder);
+            
+            console.log(" I am under the REcorder");
+            mediaRecorder.ondataavailable = (e:any) =>{
+                if(e.data.size > 0){
+                    chunks.push(e.data);
+                }
+            }
+
+            mediaRecorder.onstop = () =>{
+                const blob = new Blob(chunks,{type: "video/webm"});
+                // DEBUG
+                console.log("Final Blob", blob);
+                console.log("Blob size", blob.size);
+                console.log("Blob type", blob.type);
+
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'receiver-side-recorded-video-webm';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        }
+        
+        
 
     return <div>
         <h1>Hi from Receiver</h1>
@@ -75,7 +115,24 @@ export default function Receiver(){
         <input type="text" placeholder="Enter RoomId" onChange={(e)=>{
             setRoomId(e.target.value);
         }} />
+        <br />
+        <button onClick={startRecording}>SetUp Recording</button>
+        <br />
+        {
+            startRecordings ?<><button onClick={()=>{
+           { recorder?.start()}
+        }}>Start Recording</button>
+         <button onClick={()=>{
+            {recorder?.stop()}
+        }}>Stop Recording</button> 
+        </>: ""
+        }
+        
+        
+           
+        
+        
+        <video ref={videoRef} autoPlay muted playsInline ></video>
 
-        {/* <button onClick={init}>Go</button> */}
     </div>
 }
