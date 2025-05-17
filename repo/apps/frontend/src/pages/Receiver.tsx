@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useRef, useState } from "react"
 
 export default function Receiver(){
@@ -7,6 +8,8 @@ export default function Receiver(){
     const [stream,setStream] = useState<MediaStream | null>(null);
     const [recorder,setRecorder] = useState<MediaRecorder | null>(null);
     const [startRecordings,setStartRecordings] = useState<Boolean>(false);
+    const [videoUrl,setVideoUrl] = useState<string | null>(null);
+    const [loaderStopRecording,setLoaderStopRecording] = useState<Boolean>(false);
         
     useEffect(()=>{
     
@@ -91,21 +94,22 @@ export default function Receiver(){
 
             mediaRecorder.onstop = () =>{
                 const blob = new Blob(chunks,{type: "video/webm"});
-                // DEBUG
-                console.log("Final Blob", blob);
-                console.log("Blob size", blob.size);
-                console.log("Blob type", blob.type);
+                
+                sendBlobToS3(blob)
+            }
 
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'receiver-side-recorded-video-webm';
-                a.click();
-                URL.revokeObjectURL(url);
+            async function sendBlobToS3(blob:Blob){
+                const formData = new FormData()
+                formData.append('file',blob,'recording-receiver-side.webm');
+                const response = await axios.post('http://localhost:3001/api/v1/recordings/upload-to-s3',formData);
+                const data = response.data;        
+                setVideoUrl(data.url)
+                setLoaderStopRecording(false);
             }
         }
+}
 
-        }
+
         
         
 
@@ -124,9 +128,18 @@ export default function Receiver(){
         }}>Start Recording</button>
          <button onClick={()=>{
             {recorder?.stop()}
+            setLoaderStopRecording(true)
         }}>Stop Recording</button> 
         </>: ""
         }
+
+        {loaderStopRecording ? <h1>Wait For Url...</h1> :""}
+        {videoUrl ? <>
+        <h1>The Recorded Video of Yours</h1>
+        <br />
+        <video src={videoUrl} autoPlay playsInline></video>
+        </> : ""}
+
         
         
            
