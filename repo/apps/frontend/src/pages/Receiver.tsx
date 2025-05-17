@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react"
+import { useLocation } from "react-router-dom";
 
 export default function Receiver(){
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -10,15 +11,21 @@ export default function Receiver(){
     const [startRecordings,setStartRecordings] = useState<Boolean>(false);
     const [videoUrl,setVideoUrl] = useState<string | null>(null);
     const [loaderStopRecording,setLoaderStopRecording] = useState<Boolean>(false);
-        
+    const location = useLocation();
+    const roomName = location?.state?.roomId;
     useEffect(()=>{
-    
+        setRoomId(roomName)
         const socket = new WebSocket('ws://localhost:8080');
 
         socket.onopen = () =>{
-            console.log("sockets connected!")
-            socket?.send(JSON.stringify({type:"receiver",roomId:'121'}));
+            if(roomId){ 
+                console.log("ROomua",roomId)
+            
+            socket?.send(JSON.stringify({type:"receiver",roomId:roomId}));
             setSocket(socket);
+            console.log("sockets connected!")
+            }
+            
         }
 
         const pc = new RTCPeerConnection();
@@ -66,7 +73,7 @@ export default function Receiver(){
         
       
        
-    },[])
+    },[roomId])
 
        if(videoRef.current){
                 console.log("streamya",stream);
@@ -116,9 +123,7 @@ export default function Receiver(){
     return <div>
         <h1>Hi from Receiver</h1>
         
-        <input type="text" placeholder="Enter RoomId" onChange={(e)=>{
-            setRoomId(e.target.value);
-        }} />
+        
         <br />
         <button onClick={startRecording}>SetUp Recording</button>
         <br />

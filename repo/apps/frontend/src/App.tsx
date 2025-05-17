@@ -6,6 +6,7 @@ import { Routes,Route } from 'react-router-dom';
 import Signup from './pages/Signup';
 import Landing from './pages/Landing';
 import CreateRoom from './pages/CreateRoom';
+import JoinRoom from './pages/JoinRoom';
 
 function App() {
   
@@ -18,6 +19,7 @@ function App() {
       <Route path='/signup' element=<Signup></Signup>></Route>
       <Route path='/dashboard' element=<Dashboard></Dashboard>></Route>
       <Route path='/createRoom' element=<CreateRoom></CreateRoom>></Route>
+      <Route path='/joinRoom' element=<JoinRoom></JoinRoom>></Route>
 
     </Routes>
   )

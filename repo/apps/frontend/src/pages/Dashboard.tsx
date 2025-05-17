@@ -78,6 +78,12 @@ const Dashboard: React.FC = () => {
                 <Plus size={18} className="mr-2" />
                 New Recording
               </button>
+               <button className="btn btn-primary flex items-center" onClick={()=>{
+                navigate("/joinRoom")
+              }}>
+                <Plus size={18} className="mr-2" />
+                Join Via RoomId
+              </button>
             </div>
           </div>
           
