@@ -72,7 +72,7 @@ const Signup: React.FC = () => {
           <div className="max-w-md mx-auto w-full">
             <Link to="/" className="flex items-center space-x-2 mb-10">
               <Mic size={32} className="text-indigo-500" />
-              <span className="text-2xl font-bold">WaveStudio</span>
+              <span className="text-2xl font-bold">RiverSide</span>
             </Link>
             
             <h1 className="text-3xl font-bold mb-2">Create your account</h1>

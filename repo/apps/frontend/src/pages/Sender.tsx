@@ -1,26 +1,39 @@
 import { useEffect, useRef, useState } from "react"
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 
 export default function Sender(){
     const [socket,setSocket] = useState<WebSocket>();
-    const [roomId,setRoomId] = useState<string>("");
+    const [roomId,setRoomId] = useState<string | null>(null);
     const [stream,setStream] = useState<MediaStream|any>();
     const [recorder,setRecorder] = useState<MediaRecorder | null>(null);
     const [videoUrl,setVideoUrl] = useState<string | null>("");
     const [loaderStopRecording,setLoaderStopRecording] = useState<Boolean>(false);
     const videoRef = useRef<HTMLVideoElement>(null)
-
+    const location = useLocation();
+    const roomName = location?.state?.roomId;
+    
+    
+        
+    
     useEffect(()=>{
+        setRoomId(roomName)
     const socket = new WebSocket('ws://localhost:8080');
 
         socket.onopen = () =>{
-            console.log("sockets connected!")
-            socket?.send(JSON.stringify({type:"sender",roomId:"121"}));
-            setSocket(socket);
+            
+            if(roomId){
+                console.log("Final ROom",roomId);
+                socket?.send(JSON.stringify({type:"sender",roomId:roomId}));
+                setSocket(socket);
+                console.log("sockets connected!")
+            }
+            
+            
         }
 
-    },[])
+    },[roomId])
 
     
     async function handleRtc(){
@@ -130,9 +143,6 @@ return <div>
 
     <h1>Hi from Sender.</h1>
         
-        <input type="text" placeholder="Enter RoomId" onChange={(e)=>{
-            setRoomId(e.target.value);
-        }} />
         <br />
         <button onClick={()=>{
             {recorder?.start()}

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Mic, Plus, Video, Clock, MoreVertical, Search, Settings, Filter, Play, Edit, Trash2, Download } from 'lucide-react';
 import Header from '@repo/ui/Header';
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('recent');
+  const navigate = useNavigate();
   
   const recordings = [
     {
@@ -71,7 +72,9 @@ const Dashboard: React.FC = () => {
                 <Settings size={18} className="mr-2" />
                 Settings
               </button>
-              <button className="btn btn-primary flex items-center">
+              <button className="btn btn-primary flex items-center" onClick={()=>{
+                navigate("/createRoom")
+              }}>
                 <Plus size={18} className="mr-2" />
                 New Recording
               </button>
