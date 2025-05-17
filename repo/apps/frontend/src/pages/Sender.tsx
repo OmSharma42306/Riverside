@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react"
+import axios from "axios";
+
 
 export default function Sender(){
     const [socket,setSocket] = useState<WebSocket>();
     const [roomId,setRoomId] = useState<string>("");
     const [stream,setStream] = useState<MediaStream|any>();
     const [recorder,setRecorder] = useState<MediaRecorder | null>(null);
+    const [videoUrl,setVideoUrl] = useState<string | null>("");
+    const [loaderStopRecording,setLoaderStopRecording] = useState<Boolean>(false);
     const videoRef = useRef<HTMLVideoElement>(null)
 
     useEffect(()=>{
@@ -98,13 +102,27 @@ export default function Sender(){
         console.log("Final Blob", blob);
         console.log("Blob size", blob.size);
         console.log("Blob type", blob.type);
+        
+        sendBlobToS3(blob)
+        
 
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'recorded-video-webm';
-            a.click();
-            URL.revokeObjectURL(url);
+            // const url = URL.createObjectURL(blob);
+            // const a = document.createElement('a');
+            // a.href = url;
+            // a.download = 'recorded-video-webm';
+            // a.click();
+            // URL.revokeObjectURL(url);
+
+        }
+
+        async function sendBlobToS3(blob:Blob){            
+            const formData = new FormData();
+            formData.append('file',blob,'recording.webm');
+            const response = await axios.post('http://localhost:3001/api/v1/recordings/upload-to-s3',formData);
+            const data = response.data;
+            console.log("Data",data);
+            setVideoUrl(data.url);
+            setLoaderStopRecording(false);
         }
     }
     
@@ -124,8 +142,13 @@ return <div>
         
         <button onClick={()=>{
             recorder?.stop();
+            setLoaderStopRecording(true);
         }}>Stop Recording</button>
         
+        {loaderStopRecording ? <h1>Wait For Url.....</h1>:""}
+        
+        
+        {videoUrl ?<><h1>Your Recorded Video</h1><video src={videoUrl} autoPlay playsInline></video></>  : ""}
         <video ref={videoRef} muted autoPlay playsInline></video>
 
         {socket?<button onClick={handleRtc}>Handle RTC</button> :""}
