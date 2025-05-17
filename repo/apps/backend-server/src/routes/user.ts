@@ -25,7 +25,7 @@ console.log("i am here")
 const {success} = SignUpSchema.safeParse({name,email,password});
 console.log(success)
 if(!success){
-    res.status(400).json({error:"Invalid Format!"});
+    res.status(400).json({msg:"Invalid Format!"});
 
 }
 try{
@@ -42,13 +42,13 @@ try{
     }
     const user = await prismaClient.user.create({
         data:{
-            name: name,
-      email:email,
-      password:password
+        name: name,
+        email:email,
+        password:password
         }
     });
-    console.log(user);
-    res.json({msg:"User SignUp Successfully!"});
+
+    res.status(200).json({msg:"User SignUp Successfully!"});
     return;
 
 }catch(error){
@@ -65,7 +65,7 @@ router.post('/signin',async(req:Request,res:Response)=>{
     const {success} = SignInSchema.safeParse({email,password});
 
     if(!success){
-        res.json({error:"Invalid Input Format!"})
+        res.status(400).json({msg:"Invalid Input Format!"})
         return;
     }
     

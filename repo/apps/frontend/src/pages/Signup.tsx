@@ -33,23 +33,32 @@ const Signup: React.FC = () => {
     }
     
     setIsLoading(true);
-    
+    try{
       const response = await axios.post('http://localhost:3001/api/v1/user/signup',{
         name:name,email:email,password:confirmPassword
       });
       console.log(response.data);
-      const data = response.data;
-      // if(response.status===200){
-      //   navigate('/dashboard');
-      // }else{
-      //   setError(response.data);
-      // } 
-      
-      
-      //navigate('/dashboard');
-      
-      
-   
+      if(response.status===200){
+        navigate('/login');
+      }
+    }catch(error){
+      // @ts-ignore
+      if(error.response){
+        // @ts-ignore
+        const status = error.response.status;
+        // @ts-ignore
+        const message = error.response.data.msg;
+        console.log("Status : ",status)
+        console.log("Message : ",message)
+      if(status===409){
+        alert("User Alerady Exists!");
+      }else if(status === 400){
+        setError(message || "Invalid Format!");
+      }else{
+        setError(message || "Something Went Wrong!")
+      }
+      }       
+      } 
   };
 
   return (

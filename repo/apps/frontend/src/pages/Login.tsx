@@ -21,13 +21,35 @@ const Login: React.FC = () => {
     }
     
     setIsLoading(true);
-    
+    try{
       const response = await axios.post('http://localhost:3001/api/v1/user/signin',{email:email,password:password});
       const data = response.data;
       console.log(data);
       localStorage.setItem("JWT",data.token);
+      if(response.status===200){
+        navigate('/dashboard');
+      }
       
-      navigate('/dashboard');
+      
+    }catch(error){
+      // @ts-ignore
+      if(error.response){
+        // @ts-ignore
+        const status = error.response.status;
+        // @ts-ignore
+        const message = error.response.data.msg;
+
+        console.log("Status : ",status)
+        console.log("Message : ",message)
+
+        if(status === 400){
+        setError(message || "Invalid Format!");
+      }else{
+        setError(message || "Something Went Wrong!")
+      }
+      }
+    }
+    
       
     
   };
