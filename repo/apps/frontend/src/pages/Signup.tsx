@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mic, Mail, Lock, User, AlertCircle, CheckCircle } from 'lucide-react';
 import Footer from '@repo/ui/Footer'
+import axios from 'axios';
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const Signup: React.FC = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
@@ -33,18 +34,22 @@ const Signup: React.FC = () => {
     
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+      const response = await axios.post('http://localhost:3001/api/v1/user/signup',{
+        name:name,email:email,password:confirmPassword
+      });
+      console.log(response.data);
+      const data = response.data;
+      // if(response.status===200){
+      //   navigate('/dashboard');
+      // }else{
+      //   setError(response.data);
+      // } 
       
-      // For demo purposes, any signup works and redirects to dashboard
-      navigate('/dashboard');
       
-      // In a real app, you would create the user with your backend
-      // const response = await authService.signup(name, email, password);
-      // if (response.success) navigate('/dashboard');
-      // else setError(response.message);
-    }, 1000);
+      //navigate('/dashboard');
+      
+      
+   
   };
 
   return (

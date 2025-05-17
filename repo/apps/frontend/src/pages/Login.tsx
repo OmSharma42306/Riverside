@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mic, Mail, Lock, AlertCircle } from 'lucide-react';
 import Footer from '@repo/ui/Footer';
+import axios from 'axios';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
@@ -21,18 +22,14 @@ const Login: React.FC = () => {
     
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+      const response = await axios.post('http://localhost:3001/api/v1/user/signin',{email:email,password:password});
+      const data = response.data;
+      console.log(data);
+      localStorage.setItem("JWT",data.token);
       
-      // For demo purposes, any login works and redirects to dashboard
       navigate('/dashboard');
       
-      // In a real app, you would validate credentials with your backend
-      // const response = await authService.login(email, password);
-      // if (response.success) navigate('/dashboard');
-      // else setError(response.message);
-    }, 1000);
+    
   };
 
   return (
