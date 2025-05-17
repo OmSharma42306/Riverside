@@ -29,6 +29,17 @@ if(!success){
 
 }
 try{
+
+    const checkExistingUser = await prismaClient.user.findFirst({
+        where:{
+            email:email
+        }
+    });
+
+    if(checkExistingUser){
+        res.status(409).json({msg:"User Already Exists!"});
+        return;
+    }
     const user = await prismaClient.user.create({
         data:{
             name: name,
@@ -64,16 +75,14 @@ router.post('/signin',async(req:Request,res:Response)=>{
                 email:email
             }
         });
-        console.log(user);
+
         if(!user){
             res.status(400).json({msg:"User Not Exists!"});
             return;
         }
+
         const userId = user.id;
-        console.log(userId)
-        console.log("JWT SECRET",JWT_SECRET);
         const token = await jwt.sign({userId},JWT_SECRET);
-        console.log("hi",token)
         res.status(200).json({msg:"Successful SignIn!",token:token});
         return;
 
