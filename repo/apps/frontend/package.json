@@ -10,11 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.6",
     "@types/react-router-dom": "^5.3.3",
+    "axios": "^1.9.0",
+    "framer-motion": "^12.11.3",
     "lucide-react": "^0.510.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.0"
+    "react-router-dom": "^7.6.0",
+    "tailwindcss": "^4.1.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

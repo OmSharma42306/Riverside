@@ -117,7 +117,7 @@ export default function Sender(){
 
         async function sendBlobToS3(blob:Blob){            
             const formData = new FormData();
-            formData.append('file',blob,'recording.webm');
+            formData.append('file',blob,'recording-sender-side.webm');
             const response = await axios.post('http://localhost:3001/api/v1/recordings/upload-to-s3',formData);
             const data = response.data;
             console.log("Data",data);
