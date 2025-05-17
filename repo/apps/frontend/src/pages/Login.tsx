@@ -44,8 +44,10 @@ const Login: React.FC = () => {
 
         if(status === 400){
         setError(message || "Invalid Format!");
+        setIsLoading(false)
       }else{
         setError(message || "Something Went Wrong!")
+         setIsLoading(false)
       }
       }
     }

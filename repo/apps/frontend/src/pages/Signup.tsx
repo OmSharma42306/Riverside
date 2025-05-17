@@ -52,10 +52,13 @@ const Signup: React.FC = () => {
         console.log("Message : ",message)
       if(status===409){
         alert("User Alerady Exists!");
+        setIsLoading(false)
       }else if(status === 400){
         setError(message || "Invalid Format!");
+        setIsLoading(false)
       }else{
         setError(message || "Something Went Wrong!")
+        setIsLoading(false)
       }
       }       
       } 
