@@ -31,7 +31,9 @@ const Header: React.FC = () => {
               <Link to="/signup" className="btn btn-primary">Sign up</Link>
             </>
           ) : location.pathname === '/dashboard' ? (
-            <Link to="/" className="btn btn-outline">Log out</Link>
+            <Link to="/" className="btn btn-outline" onClick={()=>{
+              localStorage.removeItem("JWT")
+            }}>Log out</Link>
           ) : (
             // <Link to="/" className="text-gray-300 hover:text-white transition">Home</Link>
             ""
