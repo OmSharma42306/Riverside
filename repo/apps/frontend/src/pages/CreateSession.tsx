@@ -48,6 +48,7 @@
 
 
 import axios from "axios"
+import { useNavigate } from "react-router-dom";
 import { useState } from "react"
 import { Mic, AlertCircle } from 'lucide-react';
 
@@ -57,7 +58,7 @@ export default function CreateSession() {
     const [sessionName, setSessionName] = useState<string|null>(null);
     const [error, setError] = useState<string|null>(null);
     const [isLoading, setIsLoading] = useState(false);
-
+    const navigate = useNavigate();
     async function handleCreateSession() {
         if (!sessionName?.trim()) {
             setError('Please enter a session name');
@@ -80,6 +81,9 @@ export default function CreateSession() {
             const data = response.data;
             if (response.status === 200) {
                 // do next stuff
+                console.log(data);
+                const sessionCode = data.sessionCode;
+                navigate("/sender",{state:{sessionCode:sessionCode}})
             }
         } catch (error) {
             // @ts-ignore

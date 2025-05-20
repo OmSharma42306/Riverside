@@ -8,6 +8,7 @@ import Landing from './pages/Landing';
 import CreateRoom from './pages/CreateRoom';
 import JoinRoom from './pages/JoinRoom';
 import CreateSession from './pages/CreateSession';
+import JoinSession from './pages/JoinSession';
 
 function App() {
   
@@ -21,8 +22,8 @@ function App() {
       <Route path='/dashboard' element=<Dashboard></Dashboard>></Route>
       <Route path='/createRoom' element=<CreateRoom></CreateRoom>></Route>
       <Route path='/joinRoom' element=<JoinRoom></JoinRoom>></Route>
-      <Route path='/k' element=<CreateSession></CreateSession>></Route>
-      
+      <Route path='/createSession' element=<CreateSession></CreateSession>></Route>
+      <Route path='/joinSession' element=<JoinSession></JoinSession>></Route>
     </Routes>
   )
 }

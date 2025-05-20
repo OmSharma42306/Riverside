@@ -12,7 +12,7 @@ export default function Sender(){
     const [loaderStopRecording,setLoaderStopRecording] = useState<Boolean>(false);
     const videoRef = useRef<HTMLVideoElement>(null)
     const location = useLocation();
-    const roomName = location?.state?.roomId;
+    const roomName = location?.state?.sessionCode;
     
     
         
@@ -142,6 +142,14 @@ export default function Sender(){
 return <div>
 
     <h1>Hi from Sender.</h1>
+        
+        <br />
+        {
+            roomName?<> <h1>Session Code : {roomName} </h1>
+            <br />
+            <h3>Share this Session Code to Participants.</h3></>:""
+        }
+
         
         <br />
         <button onClick={()=>{

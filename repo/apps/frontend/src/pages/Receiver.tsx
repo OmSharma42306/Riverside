@@ -12,7 +12,7 @@ export default function Receiver(){
     const [videoUrl,setVideoUrl] = useState<string | null>(null);
     const [loaderStopRecording,setLoaderStopRecording] = useState<Boolean>(false);
     const location = useLocation();
-    const roomName = location?.state?.roomId;
+    const roomName = location?.state?.sessionCode;
     useEffect(()=>{
         setRoomId(roomName)
         const socket = new WebSocket('ws://localhost:8080');
