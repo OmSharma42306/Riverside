@@ -20,4 +20,12 @@ model User{
   name String
   email String @unique
   password String
+  sessions Sessions[]
+}
+
+model Sessions{
+  id Int @id @default(autoincrement())
+  userId Int
+  sessionName String @unique
+  user User @relation(fields: [userId],references: [id])
 }
