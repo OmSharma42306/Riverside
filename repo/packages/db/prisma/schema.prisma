@@ -20,6 +20,7 @@ model User {
   email    String     @unique
   password String
   sessions Sessions[]
+  tracks Tracks[]
 }
 
 model Sessions {
@@ -27,4 +28,14 @@ model Sessions {
   userId      Int
   sessionName String @unique
   user        User   @relation(fields: [userId], references: [id])
+  tracks Tracks[]
+}
+
+model Tracks {
+  id Int @id @default(autoincrement())
+  userId Int
+  sessionId Int
+  trackName String
+  user User @relation(fields: [userId],references: [id])
+  sessions Sessions @relation(fields: [sessionId],references: [id])
 }
