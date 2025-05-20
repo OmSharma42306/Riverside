@@ -130,7 +130,23 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.SessionsScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  sessionCode: 'sessionCode',
   sessionName: 'sessionName'
+};
+
+exports.Prisma.TracksScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  sessionId: 'sessionId',
+  trackName: 'trackName',
+  s3Url: 's3Url'
+};
+
+exports.Prisma.JoinSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  sessionId: 'sessionId',
+  joinedAt: 'joinedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -146,7 +162,9 @@ exports.Prisma.QueryMode = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Sessions: 'Sessions'
+  Sessions: 'Sessions',
+  Tracks: 'Tracks',
+  JoinSession: 'JoinSession'
 };
 
 /**

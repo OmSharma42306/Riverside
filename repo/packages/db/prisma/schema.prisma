@@ -21,6 +21,7 @@ model User {
   password String
   sessions Sessions[]
   tracks Tracks[]
+  joins JoinSession[]
 }
 
 model Sessions {
@@ -30,6 +31,7 @@ model Sessions {
   sessionName String @unique
   user        User   @relation(fields: [userId], references: [id])
   tracks Tracks[]
+  joinSession JoinSession[]
 }
 
 model Tracks {
@@ -37,6 +39,18 @@ model Tracks {
   userId Int
   sessionId Int
   trackName String
+  s3Url String
   user User @relation(fields: [userId],references: [id])
   sessions Sessions @relation(fields: [sessionId],references: [id])
+  
+}
+
+model JoinSession{
+  id Int @id @default(autoincrement())
+  userId Int
+  sessionId Int
+  joinedAt DateTime @default(now())
+  user User @relation(fields: [userId],references: [id])
+  sessions Sessions @relation(fields: [sessionId],references: [id])
+  
 }

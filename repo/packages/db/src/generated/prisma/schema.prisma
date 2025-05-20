@@ -15,16 +15,40 @@ datasource db {
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
+  id       Int           @id @default(autoincrement())
   name     String
-  email    String     @unique
+  email    String        @unique
   password String
   sessions Sessions[]
+  tracks   Tracks[]
+  joins    JoinSession[]
 }
 
 model Sessions {
-  id          Int    @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   userId      Int
-  sessionName String @unique
-  user        User   @relation(fields: [userId], references: [id])
+  sessionCode String        @unique
+  sessionName String        @unique
+  user        User          @relation(fields: [userId], references: [id])
+  tracks      Tracks[]
+  joinSession JoinSession[]
+}
+
+model Tracks {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  sessionId Int
+  trackName String
+  s3Url     String
+  user      User     @relation(fields: [userId], references: [id])
+  sessions  Sessions @relation(fields: [sessionId], references: [id])
+}
+
+model JoinSession {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  sessionId Int
+  joinedAt  DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  sessions  Sessions @relation(fields: [sessionId], references: [id])
 }
