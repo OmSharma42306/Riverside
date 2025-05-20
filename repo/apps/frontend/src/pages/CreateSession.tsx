@@ -83,7 +83,8 @@ export default function CreateSession() {
                 // do next stuff
                 console.log(data);
                 const sessionCode = data.sessionCode;
-                navigate("/sender",{state:{sessionCode:sessionCode}})
+                const sessionid = data.sessionid;
+                navigate("/sender",{state:{sessionCode:sessionCode,sessionid:sessionid}})
             }
         } catch (error) {
             // @ts-ignore

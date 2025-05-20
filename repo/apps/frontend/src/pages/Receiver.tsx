@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router-dom";
 
+const token = localStorage.getItem("JWT");
+
 export default function Receiver(){
     const videoRef = useRef<HTMLVideoElement>(null);
     const [socket,setSocket] = useState<WebSocket>();
@@ -13,6 +15,7 @@ export default function Receiver(){
     const [loaderStopRecording,setLoaderStopRecording] = useState<Boolean>(false);
     const location = useLocation();
     const roomName = location?.state?.sessionCode;
+    const sessionId = location?.state?.sessionId
     useEffect(()=>{
         setRoomId(roomName)
         const socket = new WebSocket('ws://localhost:8080');
@@ -108,7 +111,12 @@ export default function Receiver(){
             async function sendBlobToS3(blob:Blob){
                 const formData = new FormData()
                 formData.append('file',blob,'recording-receiver-side.webm');
-                const response = await axios.post('http://localhost:3001/api/v1/recordings/upload-to-s3',formData);
+                formData.append('sessionId',sessionId)
+                const response = await axios.post('http://localhost:3001/api/v1/recordings/upload-to-s3',formData,{
+                    headers:{
+                        Authorization:`Bearer ${token}`
+                    }
+                });
                 const data = response.data;        
                 setVideoUrl(data.url)
                 setLoaderStopRecording(false);

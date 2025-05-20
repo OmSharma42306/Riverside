@@ -16,7 +16,9 @@ export default function JoinSession(){
         });
         console.log("JOIN SESSIONS MESSAGE: ",response.data.msg);
         if(response.status === 200){
-            navigate("/receiver",{state:{sessionCode:sessionCode}})
+            const sessionId = response.data.sessionId;
+            console.log("SESSION ID ",sessionId)
+            navigate("/receiver",{state:{sessionCode:sessionCode,sessionId:sessionId}})
 
         }
         

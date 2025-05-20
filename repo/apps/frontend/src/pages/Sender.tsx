@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-
+const token = localStorage.getItem("JWT");
 
 export default function Sender(){
     const [socket,setSocket] = useState<WebSocket>();
@@ -13,6 +13,7 @@ export default function Sender(){
     const videoRef = useRef<HTMLVideoElement>(null)
     const location = useLocation();
     const roomName = location?.state?.sessionCode;
+    const sessionId = location?.state?.sessionid;
     
     
         
@@ -131,7 +132,12 @@ export default function Sender(){
         async function sendBlobToS3(blob:Blob){            
             const formData = new FormData();
             formData.append('file',blob,'recording-sender-side.webm');
-            const response = await axios.post('http://localhost:3001/api/v1/recordings/upload-to-s3',formData);
+            formData.append('sessionId',sessionId)
+            const response = await axios.post('http://localhost:3001/api/v1/recordings/upload-to-s3',formData,{
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            });
             const data = response.data;
             console.log("Data",data);
             setVideoUrl(data.url);
