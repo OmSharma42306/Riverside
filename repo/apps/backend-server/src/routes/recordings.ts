@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 import multer from "multer";
 import {S3Client,PutObjectCommand} from "@aws-sdk/client-s3"
+import { authMiddleware } from "../middlewares";
+import { prismaClient } from "@repo/db/prisma";
 
 const router = express.Router();
 
@@ -24,6 +26,11 @@ interface fileType{
     size: number;
 }
 
+interface authRequest extends Request{
+    userId?:string;
+}
+
+
 // Function to Upload Files to S3
 async function uploadToS3(file:fileType){
     console.log(file);
@@ -44,10 +51,12 @@ async function uploadToS3(file:fileType){
 // For File Stuff..
 const upload = multer();
 
-router.post('/upload-to-s3',upload.single('file'),async(req:Request,res:Response)=>{
+router.post('/upload-to-s3',upload.single('file'),authMiddleware,async(req:authRequest,res:Response)=>{
     // get video 
     const file = req.file;
-    console.log(file)
+    const userId = Number(req.userId);
+    const sessionId = Number(req.body.sessionId);
+
     // Logs of file
     // {                                                                                 
     //  fieldname: 'file',        
@@ -67,7 +76,21 @@ router.post('/upload-to-s3',upload.single('file'),async(req:Request,res:Response
 
         // upload to s3
         const s3Url = await uploadToS3(file);
-                
+
+        const tracks = await prismaClient.tracks.create({
+         
+            data:{                
+                userId:userId,
+                sessionId:sessionId,
+                trackName:file.originalname,
+                s3Url:s3Url
+            }
+        });
+        if(!tracks){
+            res.status(400).json({msg:"Tracks are Inserted to DB."})
+            return;
+        }
+        console.log(tracks);
         // return the url;
         res.status(200).json({msg:"Successfully Uploaded!",url:s3Url});
             

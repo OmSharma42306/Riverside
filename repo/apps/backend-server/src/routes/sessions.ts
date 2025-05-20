@@ -46,7 +46,11 @@ router.post('/joinSession',authMiddleware,async(req:authRequest,res:Response)=>{
                 userId:userId,sessionId:session.id
             }
         });
-        res.status(200).json({msg:"Join Session Success!"});
+        if(!joinSession){
+            res.status(400).json({msg:"Session Not Created At DB!"});
+            return;
+        } 
+        res.status(200).json({msg:"Join Session Success!",sessionId:session.id});
         return;
     }catch(error){
         res.status(400).json({msg:error});
