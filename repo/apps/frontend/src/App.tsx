@@ -7,6 +7,7 @@ import Signup from './pages/Signup';
 import Landing from './pages/Landing';
 import CreateRoom from './pages/CreateRoom';
 import JoinRoom from './pages/JoinRoom';
+import CreateSession from './pages/CreateSession';
 
 function App() {
   
@@ -20,7 +21,8 @@ function App() {
       <Route path='/dashboard' element=<Dashboard></Dashboard>></Route>
       <Route path='/createRoom' element=<CreateRoom></CreateRoom>></Route>
       <Route path='/joinRoom' element=<JoinRoom></JoinRoom>></Route>
-
+      <Route path='/k' element=<CreateSession></CreateSession>></Route>
+      
     </Routes>
   )
 }
