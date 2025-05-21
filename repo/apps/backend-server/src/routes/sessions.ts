@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, response, Response } from "express";
 import { authMiddleware } from "../middlewares";
 import { prismaClient } from "@repo/db/prisma";
 import { v4 as uuidv4 } from "uuid"
@@ -58,5 +58,47 @@ router.post('/joinSession',authMiddleware,async(req:authRequest,res:Response)=>{
     }
 })
 
+// add particular session api.
+router.get('/get-session/:id',async(req:authRequest,res:Response)=>{
+    const sessionId = Number(req.params.id);
+    try{
+        const session = await prismaClient.sessions.findFirst({
+            where:{
+                id:sessionId
+            },select:{
+                tracks:{
+                    select:{
+                        id:true,
+                        userId:true,
+                        sessionId:true,
+                        trackName:true,
+                        s3Url:true,
+                    }
+                }
+            }
+        });
+        console.log(session);
+        res.status(200).json({session});
+        return;
+    }catch(error){
+        res.status(400).json({msg:error});
+        return;
+    }
+})
+// all showing sessions on dashboard
+router.get('/get-all-sessions',authMiddleware,async(req:authRequest,res:Response)=>{
+    const userId = req.userId;
+    // const userId = 1;
+    try{
+        const sessions = await prismaClient.sessions.findMany({where:{userId}});
+        console.log("Sessions");
+        
+        res.status(200).json({sessions});
+        return;
+    }catch(error){
+        res.status(400).json({msg:error});
+    }
+    
+})
 
 export default router;
