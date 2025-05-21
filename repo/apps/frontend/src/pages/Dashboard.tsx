@@ -73,16 +73,16 @@ const Dashboard: React.FC = () => {
                 Settings
               </button>
               <button className="btn btn-primary flex items-center" onClick={()=>{
-                navigate("/createRoom")
+                navigate("/createSession")
               }}>
                 <Plus size={18} className="mr-2" />
-                New Recording
+                New Session
               </button>
                <button className="btn btn-primary flex items-center" onClick={()=>{
-                navigate("/joinRoom")
+                navigate("/joinSession")
               }}>
                 <Plus size={18} className="mr-2" />
-                Join Via RoomId
+                Join Via Session Code
               </button>
             </div>
           </div>

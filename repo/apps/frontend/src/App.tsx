@@ -9,6 +9,8 @@ import CreateRoom from './pages/CreateRoom';
 import JoinRoom from './pages/JoinRoom';
 import CreateSession from './pages/CreateSession';
 import JoinSession from './pages/JoinSession';
+import Session from './pages/Session';
+import AllSessions from './pages/AllSessions';
 
 function App() {
   
@@ -24,6 +26,8 @@ function App() {
       <Route path='/joinRoom' element=<JoinRoom></JoinRoom>></Route>
       <Route path='/createSession' element=<CreateSession></CreateSession>></Route>
       <Route path='/joinSession' element=<JoinSession></JoinSession>></Route>
+      <Route path='/session' element=<Session></Session>></Route>
+      <Route path='/allSessions' element=<AllSessions></AllSessions>></Route>
     </Routes>
   )
 }
