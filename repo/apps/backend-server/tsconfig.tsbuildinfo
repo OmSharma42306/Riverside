@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/api/api.ts","./src/middlewares/index.ts","./src/routes/host.ts","./src/routes/recordings.ts","./src/routes/user.ts"],"version":"5.8.2"}
+{"root":["./src/index.ts","./src/api/api.ts","./src/middlewares/index.ts","./src/routes/recordings.ts","./src/routes/sessions.ts","./src/routes/user.ts"],"version":"5.8.2"}
