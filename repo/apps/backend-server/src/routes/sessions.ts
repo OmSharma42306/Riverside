@@ -60,11 +60,12 @@ router.post('/joinSession',authMiddleware,async(req:authRequest,res:Response)=>{
 
 // add particular session api.
 router.get('/get-session/:id',async(req:authRequest,res:Response)=>{
-    const sessionId = Number(req.params.id);
+    const sessionCode = req.params.id;
+    
     try{
         const session = await prismaClient.sessions.findFirst({
             where:{
-                id:sessionId
+                sessionCode:sessionCode
             },select:{
                 tracks:{
                     select:{
