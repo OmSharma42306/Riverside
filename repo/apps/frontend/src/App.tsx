@@ -26,7 +26,7 @@ function App() {
       <Route path='/joinRoom' element=<JoinRoom></JoinRoom>></Route>
       <Route path='/createSession' element=<CreateSession></CreateSession>></Route>
       <Route path='/joinSession' element=<JoinSession></JoinSession>></Route>
-      <Route path='/session' element=<Session></Session>></Route>
+      <Route path='/session/:sessionCode' element=<Session></Session>></Route>
       <Route path='/allSessions' element=<AllSessions></AllSessions>></Route>
     </Routes>
   )

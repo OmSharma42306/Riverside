@@ -1,112 +1,35 @@
-// export default function AllSessions(){
-//     const sessions= [
-//     {
-//       "id": 2,
-//       "userId": 1,
-//       "sessionCode": "5274acbb-8296-42bb-9547-0019bcf72eb1",
-//       "sessionName": "OmKaPodcast"
-//     },
-//     {
-//       "id": 3,
-//       "userId": 1,
-//       "sessionCode": "7599b6c8-9b89-4220-8d63-3575373c7645",
-//       "sessionName": "OM Sagar talk"
-//     },
-//     {
-//       "id": 4,
-//       "userId": 1,
-//       "sessionCode": "51f3ee13-2539-4add-be41-9877887b7d71",
-//       "sessionName": "Gyan Ki Batein"
-//     },
-//     {
-//       "id": 5,
-//       "userId": 1,
-//       "sessionCode": "51406d8d-aa27-47df-9864-e00baa808c04",
-//       "sessionName": "PodWithXYZ"
-//     },
-//     {
-//       "id": 6,
-//       "userId": 1,
-//       "sessionCode": "8424264d-1d4d-4639-b4d0-f24443e31d90",
-//       "sessionName": "Kya hua"
-//     },
-//     {
-//       "id": 7,
-//       "userId": 1,
-//       "sessionCode": "9510bf11-61b2-4089-b983-dcf5ee76a9ec",
-//       "sessionName": "AkandaNoor"
-//     },
-//     {
-//       "id": 8,
-//       "userId": 1,
-//       "sessionCode": "5f9ebdb1-b9cb-428b-b804-787441e5b96e",
-//       "sessionName": "Kaisa"
-//     }
-//   ]
-
-//     return <div>
-//         <h1>All Sessions</h1>
-//         {sessions && sessions.length>0 ? 
-//         sessions.map((s)=>{
-//             return <div>
-                
-//                 <h2>Session Name : {s.sessionName}</h2>
-//                 <h3>Session Code : {s.sessionCode}</h3>
-//             </div>
-//         })
-//         : ""}
-//     </div>
-// }
-// with ui
 import { Link } from 'react-router-dom';
 import { Mic, Copy, ArrowRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+interface SessionsType{
+  id:number;
+  userId: number;
+  sessionCode: string;
+  sessionName: string;
+}
+
+const token = localStorage.getItem('JWT')
 
 export default function AllSessions() {
-  const sessions = [
-    {
-      "id": 2,
-      "userId": 1,
-      "sessionCode": "5274acbb-8296-42bb-9547-0019bcf72eb1",
-      "sessionName": "OmKaPodcast"
-    },
-    {
-      "id": 3,
-      "userId": 1,
-      "sessionCode": "7599b6c8-9b89-4220-8d63-3575373c7645",
-      "sessionName": "OM Sagar talk"
-    },
-    {
-      "id": 4,
-      "userId": 1,
-      "sessionCode": "51f3ee13-2539-4add-be41-9877887b7d71",
-      "sessionName": "Gyan Ki Batein"
-    },
-    {
-      "id": 5,
-      "userId": 1,
-      "sessionCode": "51406d8d-aa27-47df-9864-e00baa808c04",
-      "sessionName": "PodWithXYZ"
-    },
-    {
-      "id": 6,
-      "userId": 1,
-      "sessionCode": "8424264d-1d4d-4639-b4d0-f24443e31d90",
-      "sessionName": "Kya hua"
-    },
-    {
-      "id": 7,
-      "userId": 1,
-      "sessionCode": "9510bf11-61b2-4089-b983-dcf5ee76a9ec",
-      "sessionName": "AkandaNoor"
-    },
-    {
-      "id": 8,
-      "userId": 1,
-      "sessionCode": "5f9ebdb1-b9cb-428b-b804-787441e5b96e",
-      "sessionName": "Kaisa"
-    }
-  ];
 
+  const [sessions,setSessions] = useState<SessionsType[]>([]);
+  
+  useEffect(()=>{
+    async function getAllSessions(){
+      const response = await axios.get("http://localhost:3001/api/v1/sessions/get-all-sessions",{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
+      console.log(response.data);
+      setSessions(response.data.sessions)
+    }
+    getAllSessions();
+    
+  },[])
+  
   const copySessionCode = (code: string) => {
     navigator.clipboard.writeText(code);
   };

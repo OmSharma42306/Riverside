@@ -1,63 +1,38 @@
-// export default function Session(){
-    
-//     const tracks = [
-//       {
-//         "id": 1,
-//         "userId": 2,
-//         "sessionId": 8,
-//         "trackName": "recording-receiver-side.webm",
-//         "s3Url": "https://riverside-clone.s3.ap-south-1.amazonaws.com/recording-receiver-side.webm"
-//       },
-//       {
-//         "id": 2,
-//         "userId": 1,
-//         "sessionId": 8,
-//         "trackName": "recording-sender-side.webm",
-//         "s3Url": "https://riverside-clone.s3.ap-south-1.amazonaws.com/recording-sender-side.webm"
-//       }
-//     ]
-//     tracks.map((t)=>{
-//         console.log(t);
-//     })
-  
-
-//     return <div>
-//         hi
-//         { tracks && tracks.length>0 ? 
-//         tracks.map((t)=>{
-//             return <div>
-//                 <h1>{t.trackName}</h1>
-//                 <video src={t.s3Url} autoPlay playsInline muted></video>
-//             </div>
-//         })
-//         : ""
-    
-//         }
-//     </div>
-// }
-
-
-
-// with ui
+import axios from 'axios';
 import { Video, Volume2, Download } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+const token = localStorage.getItem("JWT");
+
+interface SessionType{
+  id : number;
+  userId : number;
+  sessionId : number;
+  trackName : string;
+  s3Url : string;
+}
 
 export default function Session() {
-  const tracks = [
-    {
-      "id": 1,
-      "userId": 2,
-      "sessionId": 8,
-      "trackName": "recording-receiver-side.webm",
-      "s3Url": "https://riverside-clone.s3.ap-south-1.amazonaws.com/recording-receiver-side.webm"
-    },
-    {
-      "id": 2,
-      "userId": 1,
-      "sessionId": 8,
-      "trackName": "recording-sender-side.webm",
-      "s3Url": "https://riverside-clone.s3.ap-south-1.amazonaws.com/recording-sender-side.webm"
+  
+  const {sessionCode} = useParams();
+  const [tracks,setTracks] = useState<SessionType[]>([]);
+
+  useEffect(()=>{
+    async function getSession(){
+        const response = await axios.get(`http://localhost:3001/api/v1/sessions/get-session/${sessionCode}`,{
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        })
+        console.log(response.data.session.tracks);
+        setTracks(response.data.session.tracks);
     }
-  ];
+    if(sessionCode){
+      getSession();
+    }
+    
+  },[])
 
   const handleDownload = (url: string, filename: string) => {
     const link = document.createElement('a');

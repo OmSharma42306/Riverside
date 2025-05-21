@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Mic, Plus, Video, Clock, MoreVertical, Search, Settings, Filter, Play, Edit, Trash2, Download } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Mic, Plus, Video, Clock, Search, Settings, Filter, Play, Edit, Trash2, Download } from 'lucide-react';
 import Header from '@repo/ui/Header';
 
 const Dashboard: React.FC = () => {
