@@ -97,15 +97,39 @@ export default function Sender(){
         const mediaRecorder = new MediaRecorder(stream,{mimeType:'video/webm'});
         setRecorder(mediaRecorder); 
         let chunks : any = [];
-
+        let chunkIndex:number = 0;
         // Media Recorder Data Getting.
-        mediaRecorder.ondataavailable = (e:any) =>{
-        
+        mediaRecorder.ondataavailable = async (e:any) =>{
+            
             if(e.data.size > 0){
                 // setChunks(prev => [...prev,e.data]);
                 chunks.push(e.data);
-                    console.log("Data Avilable",e.data);
+                console.log("Data Avilable",e.data);
+                
+                // sending data in Chunks at Backend!
+                const blob = e.data;
+                
+                // send this blob and chunkIndex to backend.
+                await sendChunks(blob,chunkIndex);
+                console.log("called function sendcHunks",chunkIndex);
+                chunkIndex++;                    
             }            
+        }
+        async function sendChunks(blob:Blob,chunkIndex:number){
+            const formData = new FormData();
+            formData.append('chunk',blob);
+            formData.append('chunkIndex',chunkIndex.toString());
+            formData.append('sessionName',roomName);
+            formData.append('sessionCode',sessionId)
+
+            // send this formData to backend service.
+            const response = await axios.post('http://localhost:3001/api/v1/recordings/chunks',formData,{
+                headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log("CHUNKS STUFF",response.data);
+            
         }
 
         // Download the Recorded Video after Stoping the Recording.
@@ -119,14 +143,6 @@ export default function Sender(){
         
         sendBlobToS3(blob)
         
-
-            // const url = URL.createObjectURL(blob);
-            // const a = document.createElement('a');
-            // a.href = url;
-            // a.download = 'recorded-video-webm';
-            // a.click();
-            // URL.revokeObjectURL(url);
-
         }
 
         async function sendBlobToS3(blob:Blob){            
@@ -159,7 +175,7 @@ return <div>
         
         <br />
         <button onClick={()=>{
-            {recorder?.start()}
+            {recorder?.start(3000)}
         }}>Start Recording</button>
         
         <br/>
