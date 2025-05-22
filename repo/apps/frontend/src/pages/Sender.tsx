@@ -115,6 +115,7 @@ export default function Sender(){
                 chunkIndex++;                    
             }            
         }
+        
         async function sendChunks(blob:Blob,chunkIndex:number){
             const formData = new FormData();
             formData.append('chunk',blob);
@@ -132,24 +133,41 @@ export default function Sender(){
             
         }
 
-        // Download the Recorded Video after Stoping the Recording.
-        mediaRecorder.onstop = () =>{
-            const blob = new Blob(chunks,{type:'video/webm'});
+        // old stuff of sending Video.
+
+        // // Download the Recorded Video after Stoping the Recording.
+        // mediaRecorder.onstop = () =>{
+        // const blob = new Blob(chunks,{type:'video/webm'});
             
-        // DEBUG
-        console.log("Final Blob", blob);
-        console.log("Blob size", blob.size);
-        console.log("Blob type", blob.type);
+        // // DEBUG
+        // console.log("Final Blob", blob);
+        // console.log("Blob size", blob.size);
+        // console.log("Blob type", blob.type);
         
-        sendBlobToS3(blob)
+        // // old method to send a complete video
+        // // sendBlobToS3(blob)
         
+        // }
+        // // old function to send a complete video
+        // async function sendBlobToS3(blob:Blob){            
+        //     const formData = new FormData();
+        //     formData.append('file',blob,'recording-sender-side.webm');
+        //     formData.append('sessionId',sessionId)
+        //     const response = await axios.post('http://localhost:3001/api/v1/recordings/upload-to-s3',formData,{
+        //         headers:{
+        //             Authorization:`Bearer ${token}`
+        //         }
+        //     });          
+        // }
+
+
+
+        mediaRecorder.onstop = () =>{
+        sendFinalCallToEndOfRecording();
         }
 
-        async function sendBlobToS3(blob:Blob){            
-            const formData = new FormData();
-            formData.append('file',blob,'recording-sender-side.webm');
-            formData.append('sessionId',sessionId)
-            const response = await axios.post('http://localhost:3001/api/v1/recordings/upload-to-s3',formData,{
+        async function sendFinalCallToEndOfRecording(){
+            const response = await axios.post('http://localhost:3001/api/v1/recordings/merge-upload-s3',{sessionId:roomName},{
                 headers:{
                     Authorization:`Bearer ${token}`
                 }
@@ -158,6 +176,7 @@ export default function Sender(){
             console.log("Data",data);
             setVideoUrl(data.url);
             setLoaderStopRecording(false);
+
         }
     }
     
