@@ -86,7 +86,7 @@ export default function Receiver(){
     
         
             
-        let chunks : any = [];
+        
 
         function startRecording(){
             setStartRecordings(true)
@@ -96,23 +96,39 @@ export default function Receiver(){
             setRecorder(mediaRecorder);
             
             console.log(" I am under the REcorder");
-            mediaRecorder.ondataavailable = (e:any) =>{
+            let chunkIndex:number=0;
+            mediaRecorder.ondataavailable = async (e:any) =>{
                 if(e.data.size > 0){
-                    chunks.push(e.data);
+                    //chunks.push(e.data);
+                    const blob = e.data;
+                    await sendChunks(blob,chunkIndex);
+                    chunkIndex++;
+
                 }
             }
 
-            mediaRecorder.onstop = () =>{
-                const blob = new Blob(chunks,{type: "video/webm"});
-                
-                sendBlobToS3(blob)
+            async function sendChunks(blob:Blob,chunkIndex:number){
+                const formData = new FormData();
+                formData.append('chunk',blob);
+                formData.append('chunkIndex',chunkIndex.toString());
+                formData.append('sessionName',roomName);
+                formData.append('sessionCode',sessionId);
+
+                // send this formData to backend service.
+            const response = await axios.post('http://localhost:3001/api/v1/recordings/chunks',formData,{
+                headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log("CHUNKS STUFF",response.data);
             }
 
-            async function sendBlobToS3(blob:Blob){
-                const formData = new FormData()
-                formData.append('file',blob,'recording-receiver-side.webm');
-                formData.append('sessionId',sessionId)
-                const response = await axios.post('http://localhost:3001/api/v1/recordings/upload-to-s3',formData,{
+            mediaRecorder.onstop = () =>{
+                sendFinalCallToEndOfRecording();    
+            }
+
+            async function sendFinalCallToEndOfRecording(){
+                const response = await axios.post('http://localhost:3001/api/v1/recordings/upload-to-s3',{sessionId:roomName},{
                     headers:{
                         Authorization:`Bearer ${token}`
                     }
@@ -121,6 +137,7 @@ export default function Receiver(){
                 setVideoUrl(data.url)
                 setLoaderStopRecording(false);
             }
+            
         }
 }
 
