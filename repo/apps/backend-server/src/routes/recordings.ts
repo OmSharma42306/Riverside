@@ -101,6 +101,28 @@ router.post('/upload-to-s3',upload.single('file'),authMiddleware,async(req:authR
 });
 
 
+router.post('/chunks',upload.single('chunk'),authMiddleware,async(req:authRequest,res:Response)=>{
+    const file = req.file;
+    const {chunkIndex,sessionName,sessionCode} = req.body;
+    
+    try{
+        if(!file){
+            res.status(400).json({msg:"File empty"})
+            return
+        }
+        
+        // all chunks stuff
+        console.log("ChunkIndex: ",chunkIndex);
+        console.log("SessionName",sessionName);
+        console.log("SessionCode",sessionCode);
+        // store on local. after getting end chunk merge and upload to s3.
 
+        res.status(200).json({msg:"Success!",data:{chunkIndex,sessionCode,sessionName}});
+        return;
+    }catch(error){
+        res.status(400).json({msg:error});
+        return;
+    }
+})
 
 export default router;
