@@ -19,17 +19,17 @@
 - [x] Display sessions and recordings in dashboard
 
 ### Optional Additions for v2
-- [ ] Show upload progress in UI
+- [X] Show upload progress in UI
 - [ ] Allow retry/re-upload if upload failed
-- [ ] Track recording status (pending, uploaded, failed)
-- [ ] Cache blob temporarily in `localStorage` or `IndexedDB`
+- [X] Track recording status (pending, uploaded, failed)
+- [X] Cache blob temporarily in `localStorage` or `IndexedDB`
 
 ## Version 3: Media Management & Async Upload Improvements
-- [ ] Upload in chunks in background
-- [ ] Display upload and processing status on dashboard
+- [X] Upload in chunks in background
+- [X] Display upload and processing status on dashboard
 - [ ] Implement retry logic with exponential backoff
 - [ ] Improve S3 metadata tagging (who, when, size)
-- [ ] Track device info (optional, for support)
+- [X] Track device info (optional, for support)
 - [ ] Add simple waveform preview (placeholder for audio analysis)
 
 ## Version 4: Move Towards Riverside-Level Infrastructure
