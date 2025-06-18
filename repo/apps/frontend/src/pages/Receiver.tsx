@@ -6,7 +6,7 @@ const token = localStorage.getItem("JWT");
 
 export default function Receiver(){
     const videoRef = useRef<HTMLVideoElement>(null);
-    const [socket,setSocket] = useState<WebSocket>();
+    const [,setSocket] = useState<WebSocket>();
     const [roomId,setRoomId] = useState<string>("");
     const [stream,setStream] = useState<MediaStream | null>(null);
     const [recorder,setRecorder] = useState<MediaRecorder | null>(null);
@@ -128,7 +128,7 @@ export default function Receiver(){
             }
 
             async function sendFinalCallToEndOfRecording(){
-                const response = await axios.post('http://localhost:3001/api/v1/recordings/upload-to-s3',{sessionId:roomName},{
+                const response = await axios.post('http://localhost:3001/api/v1/recordings/merge-upload-s3',{sessionId:roomName},{
                     headers:{
                         Authorization:`Bearer ${token}`
                     }
