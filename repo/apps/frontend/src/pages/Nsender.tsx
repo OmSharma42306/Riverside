@@ -173,8 +173,9 @@ export default function NSender() {
     };
 
     async function sendFinalCallToEndOfRecording() {
-      const response = await sendFinalCallToEndOfRecordingApi(roomName)
+      const response = await sendFinalCallToEndOfRecordingApi(roomName,'sender')
       const data = response.data;
+      console.log("URL ",data.url);
       setVideoUrl(data.url);
       setLoaderStopRecording(false);
       setIsRecording(false);

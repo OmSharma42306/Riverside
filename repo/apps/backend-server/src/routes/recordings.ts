@@ -140,8 +140,10 @@ router.post('/chunks',upload.single('chunk'),authMiddleware,async(req:authReques
 })
 
 // merge the existing chunks and uploads to s3.
+// add a queue to do this task , cause this is an asynchronus task.
 router.post('/merge-upload-s3',authMiddleware,async (req:authRequest,res:Response)=>{
     const sessionName = req.body.sessionId;
+    const userType = req.body.userType;
     const dir = path.join(__dirname,'..','uploads','chunks',sessionName);
 
     try{
@@ -160,7 +162,7 @@ router.post('/merge-upload-s3',authMiddleware,async (req:authRequest,res:Respons
         )
 
         // the path where final merged video will be
-        const mergedPath = path.join(__dirname,'..','uploads',`${sessionName}.webm`);
+        const mergedPath = path.join(__dirname,'..','uploads',`${sessionName}-${userType}.webm`);
         // created a writeStream to write all chunks into single file to above mergedPath.
         const writeStream = fs.createWriteStream(mergedPath);
 
@@ -177,7 +179,7 @@ router.post('/merge-upload-s3',authMiddleware,async (req:authRequest,res:Respons
             // so finalBuffer will be stored at mergedPath.Reading finalBuffer
             const finalBuffer = fs.readFileSync(mergedPath);
             // uploading that finalBuffer to S3 that is Final Merged Video.
-            const s3Url = await uploadToS3({buffer:finalBuffer,originalname:`${sessionName}.webm`});
+            const s3Url = await uploadToS3({buffer:finalBuffer,originalname:`${sessionName}-${userType}.webm`});
             // store metadata about this stuff to db.
 
             // Removed Existing Unusable Chunks.

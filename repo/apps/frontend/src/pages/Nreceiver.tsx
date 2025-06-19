@@ -160,7 +160,7 @@ export default function NReceiver() {
       };
 
       async function sendFinalCallToEndOfRecording() {
-        const response = await sendFinalCallToEndOfRecordingApi(roomName);
+        const response = await sendFinalCallToEndOfRecordingApi(roomName,'receiver');
         const data = response.data;
         setVideoUrl(data.url);
         setLoaderStopRecording(false);
