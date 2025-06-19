@@ -152,6 +152,65 @@ router.post('/chunks',upload.single('chunk'),authMiddleware,async(req:authReques
     }
 })
 
+// // merge the existing chunks and uploads to s3.
+// // add a queue to do this task , cause this is an asynchronus task.
+// router.post('/merge-upload-s3',authMiddleware,async (req:authRequest,res:Response)=>{
+//     const sessionName = req.body.sessionId;
+//     const userType = req.body.userType;
+//     const dir = path.join(__dirname,'..','uploads','chunks',sessionName);
+//     const dir2 = path.join(__dirname,'..','uploads2','chunks',sessionName);
+
+//     try{
+//         if(!sessionName){
+//             res.json(400).json({msg:"Empty Data! SessionId not Found!"});
+//             return;
+//         }
+//         if(!dir){
+//             res.status(400).json({msg:"Chunks Not Found!"});
+//             return;
+//         }
+
+//         // sort the files of the existing chunks directory.ensures chunks are in correct numerical order.
+//         const files = fs.readdirSync(dir).sort((a,b)=>
+//             parseInt(a) - parseInt(b)
+//         )
+
+//         // the path where final merged video will be
+//         const mergedPath = path.join(__dirname,'..','uploads',`${sessionName}-${userType}.webm`);
+//         // created a writeStream to write all chunks into single file to above mergedPath.
+//         const writeStream = fs.createWriteStream(mergedPath);
+
+//         // reading chunks 
+//         for (const file of files){
+//             const chunk = fs.readFileSync(path.join(dir,file));
+//             writeStream.write(chunk);
+//         }
+
+//         writeStream.end();
+
+//         // after writeStream end , the finish event will be called.
+//         writeStream.on('finish',async()=>{
+//             // so finalBuffer will be stored at mergedPath.Reading finalBuffer
+//             const finalBuffer = fs.readFileSync(mergedPath);
+//             // uploading that finalBuffer to S3 that is Final Merged Video.
+//             const s3Url = await uploadToS3({buffer:finalBuffer,originalname:`${sessionName}-${userType}.webm`});
+//             // store metadata about this stuff to db.
+
+//             // Removed Existing Unusable Chunks.
+//             fs.rmSync(dir,{recursive:true,force:true});
+//             fs.unlinkSync(mergedPath);
+            
+//             // Sending an Downloadable url for user to Download Final Video.
+//             res.status(200).json({msg:"Uploaded Successfully!",url:s3Url});
+//         })
+
+        
+//     }catch(error){
+//         res.status(400).json({msg:error});
+//         return;
+//     }
+// })
+
 // merge the existing chunks and uploads to s3.
 // add a queue to do this task , cause this is an asynchronus task.
 router.post('/merge-upload-s3',authMiddleware,async (req:authRequest,res:Response)=>{
@@ -159,9 +218,10 @@ router.post('/merge-upload-s3',authMiddleware,async (req:authRequest,res:Respons
     const userType = req.body.userType;
     const dir = path.join(__dirname,'..','uploads','chunks',sessionName);
     const dir2 = path.join(__dirname,'..','uploads2','chunks',sessionName);
-
+    console.log("userType in merge",userType)
     try{
-        if(!sessionName){
+        if(userType === 'sender'){
+            if(!sessionName){
             res.json(400).json({msg:"Empty Data! SessionId not Found!"});
             return;
         }
@@ -202,8 +262,58 @@ router.post('/merge-upload-s3',authMiddleware,async (req:authRequest,res:Respons
             
             // Sending an Downloadable url for user to Download Final Video.
             res.status(200).json({msg:"Uploaded Successfully!",url:s3Url});
+            return;
         })
 
+        }
+
+        if(userType === 'receiver'){
+            if(!sessionName){
+            res.json(400).json({msg:"Empty Data! SessionId not Found!"});
+            return;
+        }
+        if(!dir2){
+            res.status(400).json({msg:"Chunks Not Found!"});
+            return;
+        }
+
+        // sort the files of the existing chunks directory.ensures chunks are in correct numerical order.
+        const files = fs.readdirSync(dir2).sort((a,b)=>
+            parseInt(a) - parseInt(b)
+        )
+
+        // the path where final merged video will be
+        const mergedPath = path.join(__dirname,'..','uploads2',`${sessionName}-${userType}.webm`);
+        // created a writeStream to write all chunks into single file to above mergedPath.
+        const writeStream = fs.createWriteStream(mergedPath);
+
+        // reading chunks 
+        for (const file of files){
+            const chunk = fs.readFileSync(path.join(dir2,file));
+            writeStream.write(chunk);
+        }
+
+        writeStream.end();
+
+        // after writeStream end , the finish event will be called.
+        writeStream.on('finish',async()=>{
+            // so finalBuffer will be stored at mergedPath.Reading finalBuffer
+            const finalBuffer = fs.readFileSync(mergedPath);
+            // uploading that finalBuffer to S3 that is Final Merged Video.
+            const s3Url = await uploadToS3({buffer:finalBuffer,originalname:`${sessionName}-${userType}.webm`});
+            // store metadata about this stuff to db.
+
+            // Removed Existing Unusable Chunks.
+            fs.rmSync(dir2,{recursive:true,force:true});
+            fs.unlinkSync(mergedPath);
+            
+            // Sending an Downloadable url for user to Download Final Video.
+            res.status(200).json({msg:"Uploaded Successfully!",url:s3Url});
+            return;
+        })
+
+        }
+        
         
     }catch(error){
         res.status(400).json({msg:error});
