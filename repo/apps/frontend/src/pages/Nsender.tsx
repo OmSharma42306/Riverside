@@ -26,6 +26,8 @@ export default function NSender() {
   const [copiedCode, setCopiedCode] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const [disableCallButton,setDisableCallButton] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const roomName = location?.state?.sessionCode;
@@ -103,9 +105,11 @@ export default function NSender() {
   };
 
   async function handleRtc() {
+    
     console.log("aaaaa")
     if (!socket) return;
     console.log("eeeee")
+    setDisableCallButton(true)
     socket.onmessage = async (event: any) => {
       const msg = JSON.parse(event.data);
       if (msg.type === "receiver-remote-description") {
@@ -122,12 +126,17 @@ export default function NSender() {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     setStream(stream);
 
+ 
     if (videoRef.current) {
       videoRef.current.srcObject = stream;
       stream.getTracks().forEach(track => {
         pc.addTrack(track, stream);
       });
       videoRef.current.play();
+    }
+    if(localVideoRef.current){
+      localVideoRef.current.srcObject = stream;
+      localVideoRef.current.play()
     }
     
     pc.onnegotiationneeded = async () => {
@@ -195,6 +204,7 @@ export default function NSender() {
     if (recorder) {
       recorder.stop();
       setLoaderStopRecording(true);
+      setIsRecording(false);
     }
   };
 
@@ -224,6 +234,15 @@ export default function NSender() {
             </div>
           </div>
         </div>
+        <div className="w-2">
+          <video
+  ref={localVideoRef}
+  muted
+  autoPlay
+  playsInline
+  className="w-32 h-20 sm:w-40 sm:h-24 rounded-lg border-2 border-white absolute bottom-6 right-6 shadow-lg"
+/>
+        </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Video Preview */}
@@ -247,9 +266,10 @@ export default function NSender() {
 
               {/* Controls Overlay */}
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-                <div className="flex items-center space-x-4 bg-black/50 backdrop-blur-sm rounded-full px-6 py-3">
+                <div className="flex items-center space-x-3 bg-black/50 backdrop-blur-sm rounded-full px-4 py-3">
                   <button
                       onClick={handleRtc}
+                      disabled={disableCallButton}
                       className="bg-purple-600 hover:bg-purple-700 text-black text-2xl  font-weight:900 p-6  rounded-full transition-colors"
                     >Start Call
                       <Video className="w-33 h-5" />
@@ -264,14 +284,17 @@ export default function NSender() {
                           disabled={!recorder}
                           className="bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white p-3 rounded-full transition-colors"
                         >
-                          <Circle className="w-5 h-5" />
+                          Record Video
+                          <Circle className="w-22 h-6" />
+                          
                         </button>
                       ) : (
                         <button
                           onClick={stopRecording}
                           className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full transition-colors"
                         >
-                          <Square className="w-5 h-5" />
+                          <p>Stop Recording</p>
+                          <Square className="w-27 h-5" />
                         </button>
                       )}
                     </>

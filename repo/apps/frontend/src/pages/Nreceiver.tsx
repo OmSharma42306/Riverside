@@ -14,6 +14,7 @@ import { sendChunksToBackend,sendFinalCallToEndOfRecordingApi } from "../api/api
 
 export default function NReceiver() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const localVideoRef = useRef<HTMLVideoElement>(null);
   const [, setSocket] = useState<WebSocket>();
   const [, setRoomId] = useState<string>("");
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -94,7 +95,13 @@ export default function NReceiver() {
       videoRef.current.srcObject = stream;
       videoRef.current.play();
     }
+   
+    if(localVideoRef.current && stream){
+    localVideoRef.current.srcObject = stream;
+    localVideoRef.current.play()
+  }
   }, [stream]);
+  
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -211,7 +218,15 @@ export default function NReceiver() {
             </div>
           </div>
         </div>
-
+         <div>
+          <video
+  ref={localVideoRef}
+  muted
+  autoPlay
+  playsInline
+  className="w-32 h-20 sm:w-80 sm:h-50 rounded-lg border-2 border-white absolute bottom-6 right-6 shadow-lg"
+/>
+        </div>
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Video Preview */}
           <div className="lg:col-span-2">
