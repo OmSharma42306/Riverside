@@ -1,11 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { 
   Video, 
-  VideoOff, 
-  Mic, 
-  MicOff, 
   Square, 
   Circle, 
   Download,
@@ -15,13 +11,12 @@ import {
   ArrowLeft,
   Loader
 } from "lucide-react";
-
-const token = localStorage.getItem("JWT");
+import { sendChunksToBackend,sendFinalCallToEndOfRecordingApi } from "../api/api";
 
 export default function NSender() {
   const [socket, setSocket] = useState<WebSocket>();
-  const [roomId, setRoomId] = useState<string | null>(null);
-  const [stream, setStream] = useState<MediaStream | any>();
+  const [, setRoomId] = useState<string | null>(null);
+  const [, setStream] = useState<MediaStream | any>();
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>("");
   const [loaderStopRecording, setLoaderStopRecording] = useState<Boolean>(false);
@@ -169,11 +164,8 @@ export default function NSender() {
       formData.append('sessionName', roomName);
       formData.append('sessionCode', sessionId);
 
-      const response = await axios.post('http://localhost:3001/api/v1/recordings/chunks', formData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await sendChunksToBackend(formData);
+      console.log(response)
     }
 
     mediaRecorder.onstop = () => {
@@ -181,12 +173,7 @@ export default function NSender() {
     };
 
     async function sendFinalCallToEndOfRecording() {
-      const response = await axios.post('http://localhost:3001/api/v1/recordings/merge-upload-s3', 
-        { sessionId: roomName }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await sendFinalCallToEndOfRecordingApi(roomName)
       const data = response.data;
       setVideoUrl(data.url);
       setLoaderStopRecording(false);

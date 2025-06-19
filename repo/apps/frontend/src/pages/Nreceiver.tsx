@@ -1,11 +1,7 @@
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { 
   Video, 
-  VideoOff, 
-  Mic, 
-  MicOff, 
   Square, 
   Circle, 
   Download,
@@ -14,13 +10,12 @@ import {
   Users,
   Play
 } from "lucide-react";
-
-const token = localStorage.getItem("JWT");
+import { sendChunksToBackend,sendFinalCallToEndOfRecordingApi } from "../api/api";
 
 export default function NReceiver() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [socket, setSocket] = useState<WebSocket>();
-  const [roomId, setRoomId] = useState<string>("");
+  const [, setSocket] = useState<WebSocket>();
+  const [, setRoomId] = useState<string>("");
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
   const [startRecordings, setStartRecordings] = useState<Boolean>(false);
@@ -151,11 +146,13 @@ export default function NReceiver() {
         formData.append('sessionName', roomName);
         formData.append('sessionCode', sessionId);
 
-        const response = await axios.post('http://localhost:3001/api/v1/recordings/chunks', formData, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        // const response = await axios.post('http://localhost:3001/api/v1/recordings/chunks', formData, {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`
+        //   }
+        // });
+        const response = await sendChunksToBackend(formData);
+        console.log(response)
       }
 
       mediaRecorder.onstop = () => {
@@ -163,12 +160,7 @@ export default function NReceiver() {
       };
 
       async function sendFinalCallToEndOfRecording() {
-        const response = await axios.post('http://localhost:3001/api/v1/recordings/merge-upload-s3', 
-          { sessionId: roomName }, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        const response = await sendFinalCallToEndOfRecordingApi(roomName);
         const data = response.data;
         setVideoUrl(data.url);
         setLoaderStopRecording(false);

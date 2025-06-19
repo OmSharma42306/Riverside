@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mic, Mail, Lock, AlertCircle } from 'lucide-react';
 import Footer from '@repo/ui/Footer';
-import axios from 'axios';
+import { login } from '../api/api';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const Login: React.FC = () => {
     
     setIsLoading(true);
     try{
-      const response = await axios.post('http://localhost:3001/api/v1/user/signin',{email:email,password:password});
+      const response = await login(email,password);
       const data = response.data;
       console.log(data);
       localStorage.setItem("JWT",data.token);

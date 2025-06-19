@@ -11,6 +11,10 @@ import CreateSession from './pages/CreateSession';
 import JoinSession from './pages/JoinSession';
 import Session from './pages/Session';
 import AllSessions from './pages/AllSessions';
+import Home from './pages/Home';
+
+import NSender from './pages/Nsender';
+import NReceiver from './pages/Nreceiver';
 
 function App() {
   
@@ -28,6 +32,9 @@ function App() {
       <Route path='/joinSession' element=<JoinSession></JoinSession>></Route>
       <Route path='/session/:sessionCode' element=<Session></Session>></Route>
       <Route path='/allSessions' element=<AllSessions></AllSessions>></Route>
+      <Route path='/home' element=<Home></Home>></Route>
+      <Route path='/nsender' element=<NSender></NSender>></Route>
+      <Route path='/nreceiver' element={<NReceiver/>}></Route>
     </Routes>
   )
 }

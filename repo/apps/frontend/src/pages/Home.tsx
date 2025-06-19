@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Video, Users, ArrowRight, Mic, Settings } from 'lucide-react';
 

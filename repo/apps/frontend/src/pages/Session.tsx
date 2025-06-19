@@ -1,9 +1,8 @@
-import axios from 'axios';
 import { Video, Volume2, Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { getSession } from '../api/api';
 
-const token = localStorage.getItem("JWT");
 
 interface SessionType{
   id : number;
@@ -15,21 +14,17 @@ interface SessionType{
 
 export default function Session() {
   
-  const {sessionCode} = useParams();
+  const {sessionCode}:any = useParams();
   const [tracks,setTracks] = useState<SessionType[]>([]);
 
   useEffect(()=>{
-    async function getSession(){
-        const response = await axios.get(`http://localhost:3001/api/v1/sessions/get-session/${sessionCode}`,{
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
-        })
+    async function getSessionEffect(){
+        const response  = await getSession(sessionCode);
         console.log(response.data.session.tracks);
         setTracks(response.data.session.tracks);
     }
     if(sessionCode){
-      getSession();
+      getSessionEffect();
     }
     
   },[])

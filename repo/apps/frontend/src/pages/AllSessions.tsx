@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Mic, Copy, ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { fetchAllSessions } from '../api/api';
 
 interface SessionsType{
   id:number;
@@ -10,24 +10,17 @@ interface SessionsType{
   sessionName: string;
 }
 
-const token = localStorage.getItem('JWT')
 
 export default function AllSessions() {
-
   const [sessions,setSessions] = useState<SessionsType[]>([]);
   
   useEffect(()=>{
-    async function getAllSessions(){
-      const response = await axios.get("http://localhost:3001/api/v1/sessions/get-all-sessions",{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
-      });
-      console.log(response.data);
-      setSessions(response.data.sessions)
+    async function getSessions(){
+      const data = await fetchAllSessions();
+      setSessions(data.sessions)
     }
-    getAllSessions();
-    
+    getSessions();
+  
   },[])
   
   const copySessionCode = (code: string) => {

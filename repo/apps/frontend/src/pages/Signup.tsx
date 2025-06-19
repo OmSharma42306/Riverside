@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mic, Mail, Lock, User, AlertCircle, CheckCircle } from 'lucide-react';
 import Footer from '@repo/ui/Footer'
-import axios from 'axios';
+import { signUp } from '../api/api';
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
@@ -34,9 +34,7 @@ const Signup: React.FC = () => {
     
     setIsLoading(true);
     try{
-      const response = await axios.post('http://localhost:3001/api/v1/user/signup',{
-        name:name,email:email,password:confirmPassword
-      });
+      const response = await signUp(name,email,confirmPassword);      
       console.log(response.data);
       if(response.status===200){
         navigate('/login');

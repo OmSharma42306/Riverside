@@ -6,7 +6,7 @@ const token = localStorage.getItem("JWT");
 export default function Sender(){
     const [socket,setSocket] = useState<WebSocket>();
     const [roomId,setRoomId] = useState<string | null>(null);
-    const [stream,setStream] = useState<MediaStream|any>();
+    const [,setStream] = useState<MediaStream|any>();
     const [recorder,setRecorder] = useState<MediaRecorder | null>(null);
     const [videoUrl,setVideoUrl] = useState<string | null>("");
     const [loaderStopRecording,setLoaderStopRecording] = useState<Boolean>(false);
@@ -96,14 +96,12 @@ export default function Sender(){
         // Media Recoreder Stuff.
         const mediaRecorder = new MediaRecorder(stream,{mimeType:'video/webm'});
         setRecorder(mediaRecorder); 
-        let chunks : any = [];
+
         let chunkIndex:number = 0;
         // Media Recorder Data Getting.
         mediaRecorder.ondataavailable = async (e:any) =>{
             
-            if(e.data.size > 0){
-                // setChunks(prev => [...prev,e.data]);
-                chunks.push(e.data);
+            if(e.data.size > 0){                
                 console.log("Data Avilable",e.data);
                 
                 // sending data in Chunks at Backend!
@@ -111,7 +109,6 @@ export default function Sender(){
                 
                 // send this blob and chunkIndex to backend.
                 await sendChunks(blob,chunkIndex);
-                console.log("called function sendcHunks",chunkIndex);
                 chunkIndex++;                    
             }            
         }

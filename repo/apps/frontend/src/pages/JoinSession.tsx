@@ -1,19 +1,16 @@
-import axios from "axios";
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
+import { joinSession } from "../api/api";
 
 const token = localStorage.getItem("JWT");
+console.log("JOIN SESSIOn",token);
 export default function JoinSession(){
     const [sessionCode,setSessionCode] = useState<string|null>(null);
     const navigate = useNavigate();
     
     async function handleJoinSession(){
         try{
-            const response = await axios.post("http://localhost:3001/api/v1/sessions/joinSession",{sessionCode},{
-            headers:{
-                Authorization:`Bearer ${token}`
-            }
-        });
+            const response = await joinSession(sessionCode);
         console.log("JOIN SESSIONS MESSAGE: ",response.data.msg);
         if(response.status === 200){
             const sessionId = response.data.sessionId;
