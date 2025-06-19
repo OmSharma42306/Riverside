@@ -145,6 +145,7 @@ export default function NReceiver() {
         formData.append('chunkIndex', chunkIndex.toString());
         formData.append('sessionName', roomName);
         formData.append('sessionCode', sessionId);
+        formData.append('userType','receiver')
 
         // const response = await axios.post('http://localhost:3001/api/v1/recordings/chunks', formData, {
         //   headers: {

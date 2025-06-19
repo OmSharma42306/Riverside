@@ -163,6 +163,7 @@ export default function NSender() {
       formData.append('chunkIndex', chunkIndex.toString());
       formData.append('sessionName', roomName);
       formData.append('sessionCode', sessionId);
+      formData.append('userType','sender')
 
       const response = await sendChunksToBackend(formData);
       console.log(response)

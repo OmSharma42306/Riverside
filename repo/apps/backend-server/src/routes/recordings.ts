@@ -106,8 +106,8 @@ router.post('/upload-to-s3',upload.single('file'),authMiddleware,async(req:authR
 // create the chunks and stores for temp storage in uploads folder by SessionId.
 router.post('/chunks',upload.single('chunk'),authMiddleware,async(req:authRequest,res:Response)=>{
     const file = req.file;
-    const {chunkIndex,sessionName,sessionCode} = req.body;
-    
+    const {chunkIndex,sessionName,sessionCode,userType} = req.body;
+    console.log("USERTYPE",userType);
     try{
         if(!file){
             res.status(400).json({msg:"File empty"})
@@ -124,14 +124,27 @@ router.post('/chunks',upload.single('chunk'),authMiddleware,async(req:authReques
         console.log("SessionCode",sessionCode);
         // store on local. after getting end chunk merge and upload to s3.
         // Save each chunk to a temp directory
-
-        const dir = path.join(__dirname,'..','uploads','chunks',sessionName);
-        fs.mkdirSync(dir,{recursive:true})
+        if(userType==='sender'){
+            const dir = path.join(__dirname,'..','uploads','chunks',sessionName);
+            fs.mkdirSync(dir,{recursive:true})
         
-        const chunkPath = path.join(dir,`${chunkIndex}.webm`);
-        fs.writeFileSync(chunkPath,file.buffer);
+            const chunkPath = path.join(dir,`${chunkIndex}.webm`);
+            fs.writeFileSync(chunkPath,file.buffer);
         
         res.status(200).json({msg:"Success!",data:{chunkIndex,sessionCode,sessionName}});
+        return;
+        }
+        if(userType === 'receiver'){
+            const dir = path.join(__dirname,'..','uploads2','chunks',sessionName);
+            fs.mkdirSync(dir,{recursive:true});
+
+            const chunkPath = path.join(dir,`${chunkIndex}.webm`)
+            fs.writeFileSync(chunkPath,file.buffer);
+
+            res.status(200).json({msg:"Success!",data:{chunkIndex,sessionCode,sessionName}});
+            return;
+        }
+        
         return;
     }catch(error){
         res.status(400).json({msg:error});
@@ -145,6 +158,7 @@ router.post('/merge-upload-s3',authMiddleware,async (req:authRequest,res:Respons
     const sessionName = req.body.sessionId;
     const userType = req.body.userType;
     const dir = path.join(__dirname,'..','uploads','chunks',sessionName);
+    const dir2 = path.join(__dirname,'..','uploads2','chunks',sessionName);
 
     try{
         if(!sessionName){
