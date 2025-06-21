@@ -204,6 +204,7 @@ export default function NSender() {
   const stopRecording = () => {
     if (recorder) {
       recorder.stop();
+      socket?.send(JSON.stringify({type:"stop-recording",roomId:roomName}))
       setLoaderStopRecording(true);
       setIsRecording(false);
     }

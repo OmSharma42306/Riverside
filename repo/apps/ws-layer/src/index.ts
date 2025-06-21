@@ -58,8 +58,10 @@ wss.on('connection',function newConnection(ws:WebSocket,req:any){
             const roomId = msg.roomId;
             console.log("RoomID for Sender");
             senderSocket?.receiver?.send(JSON.stringify({type:'start-record',roomId:roomId}));
-            
-            
+        }else if(msg.type === "stop-recording"){
+            const senderSocket = getSocketbySession(ws);
+            const roomId = msg.roomId;
+            senderSocket?.receiver?.send(JSON.stringify({type:"stop-recording",roomId:roomId}));
         }
     })
 

@@ -29,6 +29,7 @@ export default function NReceiver() {
   const location = useLocation();
   const navigate = useNavigate();
   const [readyForRecording,setReadyForRecording] = useState(false);
+  const [stopRecording,setStopRecording]  = useState(false);
   const roomName = location?.state?.sessionCode;
   const sessionId = location?.state?.sessionId;
 
@@ -79,6 +80,12 @@ export default function NReceiver() {
         if(roomId === roomName){
           // set an state for ReadyToRecord.
           setReadyForRecording(true)    
+        }
+      }else if(msg.type === "stop-recording"){
+        const roomId = msg.roomId;
+        if(roomId === roomName){
+          console.log("inside handle stop")
+          setStopRecording(true);
         }
       }
     };
@@ -209,9 +216,19 @@ export default function NReceiver() {
     }
   };
 
+  useEffect(()=>{
+    if(recorder && stopRecording){
+      recorder.stop();
+      console.log("stopeed the recording!");
+      setLoaderStopRecording(true);
+       setIsRecording(false);
+    }
+  },[recorder,stopRecording])
+
   const handleStopRecording = () => {
     if (recorder) {
       recorder.stop();
+      console.log("stopeed the recording!");
       setLoaderStopRecording(true);
        setIsRecording(false);
     }
@@ -282,7 +299,7 @@ export default function NReceiver() {
               )}
 
               {/* Controls Overlay */}
-              {stream && (
+              {/* {stream && (
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
                   <div className="flex items-center space-x-4 bg-black/50 backdrop-blur-sm rounded-full px-6 py-3">
                     {!startRecordings ? (
@@ -315,7 +332,7 @@ export default function NReceiver() {
                     )}
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
 
