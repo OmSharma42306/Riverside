@@ -15,7 +15,7 @@ export default function JoinSession(){
         if(response.status === 200){
             const sessionId = response.data.sessionId;
             console.log("SESSION ID ",sessionId)
-            navigate("/receiver",{state:{sessionCode:sessionCode,sessionId:sessionId}})
+            navigate("/nreceiver",{state:{sessionCode:sessionCode,sessionId:sessionId}})
 
         }
         

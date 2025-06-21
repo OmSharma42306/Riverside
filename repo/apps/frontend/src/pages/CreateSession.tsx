@@ -73,7 +73,7 @@ export default function CreateSession() {
         console.log(data);
         const sessionCode = data.sessionCode;
         const sessionid = data.sessionid;
-        navigate("/sender", {
+        navigate("/nsender", {
           state: { sessionCode: sessionCode, sessionid: sessionid },
         });
       }
