@@ -81,6 +81,11 @@ router.post('/signin',async(req:Request,res:Response)=>{
             return;
         }
 
+        if(password !== user.password){
+            res.status(400).json({msg:"Invalid Credentials!"});
+            return;
+        }
+
         const userId = user.id;
         const token = await jwt.sign({userId},JWT_SECRET);
         res.status(200).json({msg:"Successful SignIn!",token:token});
