@@ -28,8 +28,11 @@ export default function NReceiver() {
   const [recordingDuration, setRecordingDuration] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
+  const [readyForRecording,setReadyForRecording] = useState(false);
   const roomName = location?.state?.sessionCode;
   const sessionId = location?.state?.sessionId;
+
+
 
   useEffect(() => {
     if (!roomName || !sessionId) {
@@ -71,11 +74,18 @@ export default function NReceiver() {
         ws?.send(JSON.stringify({ type: 'create-answer', sdp: answer }));
       } else if (msg.type === "sender-iceCandidate") {
         pc.addIceCandidate(msg.candidate);
+      }else if(msg.type === "start-record"){
+        const roomId = msg.roomId;        
+        if(roomId === roomName){
+          // set an state for ReadyToRecord.
+          setReadyForRecording(true)    
+        }
       }
     };
 
     pc.ontrack = (event) => {
       setStream(event.streams[0]);
+      console.log("Steram set! fires")
     };
 
     pc.onicecandidate = (event) => {
@@ -94,13 +104,20 @@ export default function NReceiver() {
     if (videoRef.current && stream) {
       videoRef.current.srcObject = stream;
       videoRef.current.play();
+      
     }
    
     if(localVideoRef.current && stream){
     localVideoRef.current.srcObject = stream;
     localVideoRef.current.play()
   }
-  }, [stream]);
+
+// added for recording triggers when stream is avialble
+  if(stream && readyForRecording){
+    console.log("Final ")
+    startRecording();
+  }
+  }, [stream,readyForRecording ]);
   
 
   useEffect(() => {
@@ -131,12 +148,17 @@ export default function NReceiver() {
     }
   };
 
-  function startRecording() {
+  async function startRecording() {
     setStartRecordings(true);
-    if (stream) {
-      const mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
-      setRecorder(mediaRecorder);
+    if (!stream) return;
       
+    const mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
+    setRecorder(mediaRecorder);       
+
+    mediaRecorder.start(3000);
+    setIsRecording(true);
+    setRecordingDuration(0);
+    
       let chunkIndex: number = 0;
       mediaRecorder.ondataavailable = async (e: any) => {
         if (e.data.size > 0) {
@@ -174,11 +196,13 @@ export default function NReceiver() {
         setLoaderStopRecording(false);
         setIsRecording(false);
       }
-    }
+    
   }
 
   const handleStartRecording = () => {
+    console.log("handleStarteRecording called")
     if (recorder) {
+      console.log("inside if rec am started!")
       recorder.start(3000);
       setIsRecording(true);
       setRecordingDuration(0);

@@ -52,6 +52,14 @@ wss.on('connection',function newConnection(ws:WebSocket,req:any){
             const candidate = msg.candidate;
             const senderSocket = getSocketbySession(ws);
             senderSocket?.sender?.send(JSON.stringify({type:'receiver-iceCandidate',candidate:candidate}));
+        }// for auto triggers recording on receiver side.
+        else if(msg.type === "record-video"){
+            const senderSocket = getSocketbySession(ws);
+            const roomId = msg.roomId;
+            console.log("RoomID for Sender");
+            senderSocket?.receiver?.send(JSON.stringify({type:'start-record',roomId:roomId}));
+            
+            
         }
     })
 

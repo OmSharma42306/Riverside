@@ -194,6 +194,7 @@ export default function NSender() {
 
   const startRecording = () => {
     if (recorder) {
+      socket?.send(JSON.stringify({type:'record-video',roomId:roomName}))
       recorder.start(3000);
       setIsRecording(true);
       setRecordingDuration(0);
