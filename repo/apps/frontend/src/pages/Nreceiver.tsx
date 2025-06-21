@@ -189,6 +189,7 @@ export default function NReceiver() {
     if (recorder) {
       recorder.stop();
       setLoaderStopRecording(true);
+       setIsRecording(false);
     }
   };
 
@@ -233,8 +234,7 @@ export default function NReceiver() {
             <div className="bg-black rounded-2xl overflow-hidden relative">
               <video
                 ref={videoRef}
-                autoPlay
-                muted
+                autoPlay                
                 playsInline
                 className="w-full aspect-video object-cover"
               />
@@ -275,14 +275,16 @@ export default function NReceiver() {
                             onClick={handleStartRecording}
                             className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full transition-colors"
                           >
-                            <Circle className="w-5 h-5" />
+                            Start Recording
+                            <Circle className="w-25 h-7" />
                           </button>
                         ) : (
                           <button
                             onClick={handleStopRecording}
                             className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full transition-colors"
                           >
-                            <Square className="w-5 h-5" />
+                            Stop Recording
+                            <Square className="w-25 h-7" />
                           </button>
                         )}
                       </>

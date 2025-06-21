@@ -250,7 +250,6 @@ export default function NSender() {
             <div className="bg-black rounded-2xl overflow-hidden relative">
               <video
                 ref={videoRef}
-                muted
                 autoPlay
                 playsInline
                 className="w-full aspect-video object-cover"
