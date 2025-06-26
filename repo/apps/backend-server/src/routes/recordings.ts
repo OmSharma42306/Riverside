@@ -260,12 +260,32 @@ router.post('/merge-upload-s3',authMiddleware,async (req:authRequest,res:Respons
             fs.rmSync(dir,{recursive:true,force:true});
             fs.unlinkSync(mergedPath);
             
+
+            // sender one saving tracks
+            console.log("SESSION NAME : ",sessionName)
+
+            const sessions = await prismaClient.sessions.findFirst({where:{
+                sessionName:sessionName,
+            },
+        });
+        console.log("ALL SESSIONS",sessions);
+
+        
+        const tracks = await prismaClient.tracks.create({data:{
+                userId:1,
+                trackName:`${sessionName}-${userType}`,
+                s3Url:s3Url,
+                sessionId:54,
+            }})
+
+            console.log("Tracks Created!",tracks);
+            
             // Sending an Downloadable url for user to Download Final Video.
-            res.status(200).json({msg:"Uploaded Successfully!",url:s3Url});
+            res.status(200).json({msg:"Uploaded Successfully!",url:tracks.s3Url});
             return;
         })
 
-        }
+    }
 
         if(userType === 'receiver'){
             if(!sessionName){
@@ -306,15 +326,21 @@ router.post('/merge-upload-s3',authMiddleware,async (req:authRequest,res:Respons
             // Removed Existing Unusable Chunks.
             fs.rmSync(dir2,{recursive:true,force:true});
             fs.unlinkSync(mergedPath);
-            
+
+            const tracks = await prismaClient.tracks.create({data:{
+                userId:1,
+                trackName:`${sessionName}-${userType}`,
+                s3Url:s3Url,
+                sessionId:54,
+            }})
+
+            console.log("Tracks Created!",tracks);              
             // Sending an Downloadable url for user to Download Final Video.
             res.status(200).json({msg:"Uploaded Successfully!",url:s3Url});
             return;
         })
+    }        
 
-        }
-        
-        
     }catch(error){
         res.status(400).json({msg:error});
         return;
@@ -322,4 +348,55 @@ router.post('/merge-upload-s3',authMiddleware,async (req:authRequest,res:Respons
 })
 
 
+
+router.post('/get-all-tracks',async(req:authRequest,res:Response)=>{
+    
+    const sessionId = req.body.sessionId;
+    // const userId = req.userId;
+
+    // do a db call and fetch session and get both host and joiner's tracks , and return s3url of the tracks.
+    const tracks = await prismaClient.tracks.findMany({where:{
+        sessionId:sessionId
+    }});
+    
+console.log("Tracks : " ,tracks)
+if(!tracks){
+    res.status(400).json({msg:"Tracks not Found!"});
+}
+
+// res.status(200).json({msg:"TracksFound",senderTrack:tracks?.senderTrack,receiverTrack:tracks?.receiverTrack,tracks:tracks});
+
+});
+
+
+router.get('/get-session-videos',async(req:Request,res:Response)=>{
+    // const sessionId = Number(req.params.sessionId);
+    const sessionId = 54;
+
+    try{
+        const allVideoUrl = await prismaClient.tracks.findMany({
+            select:{
+                s3Url:true
+            },where:{
+                sessionId:sessionId
+            }
+        });
+        console.log("all Video Url",allVideoUrl);
+        res.status(200).json({recordings:allVideoUrl});
+    }catch(error){
+        res.status(400).json({error:error});        
+    }
+    return ; 
+})
+
+
+
+
+
+
+
+
+
 export default router;
+
+

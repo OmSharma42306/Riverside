@@ -15,7 +15,6 @@ app.use(bodyParser.json());
 app.use("/api/v1",rootRouter)
 
 
-
 app.listen(PORT,()=>{
     console.log(`Backend Server Started! at PORT : ${PORT} `)
 })
