@@ -11,7 +11,9 @@ import {
   ArrowLeft,
   Loader
 } from "lucide-react";
-import { sendChunksToBackend,sendFinalCallToEndOfRecordingApi } from "../api/api";
+import { getAllVideosApi, sendChunksToBackend,sendFinalCallToEndOfRecordingApi } from "../api/api";
+
+
 
 export default function NSender() {
   const [socket, setSocket] = useState<WebSocket>();
@@ -25,6 +27,9 @@ export default function NSender() {
   const [connectionStatus, setConnectionStatus] = useState("Connecting...");
   const [copiedCode, setCopiedCode] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
+
+  const [allVideoUrls,setAllVideoUrls] = useState([]);
+  const [isMerged,setIsMerged] = useState<Boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const [disableCallButton,setDisableCallButton] = useState(false);
@@ -93,6 +98,7 @@ export default function NSender() {
     }
   };
 
+  
   const downloadVideo = () => {
     if (videoUrl) {
       const link = document.createElement('a');
@@ -104,14 +110,34 @@ export default function NSender() {
     }
   };
 
+  const getAllVideos = async () =>{
+    try{
+      const response:any = getAllVideosApi(sessionId);
+      const data = response.data;
+      console.log("Data:  ",data);
+      const recordings = data.recordings;
+      console.log("Recordings:  ",recordings);      
+      setAllVideoUrls(recordings);
+    }catch(error){
+      console.error(error);
+    }
+  }
+
+  useEffect(()=>{
+    if(isMerged === true){
+      getAllVideos();
+      console.log("Function called");
+    }
+  },[isMerged])
+
   async function handleRtc() {
-    
-    console.log("aaaaa")
+
     if (!socket) return;
-    console.log("eeeee")
     setDisableCallButton(true)
+
     socket.onmessage = async (event: any) => {
       const msg = JSON.parse(event.data);
+
       if (msg.type === "receiver-remote-description") {
         pc?.setRemoteDescription(msg.sdp);
         console.log("setpcc remote")
@@ -134,6 +160,7 @@ export default function NSender() {
       });
       videoRef.current.play();
     }
+    
     if(localVideoRef.current){
       localVideoRef.current.srcObject = stream;
       localVideoRef.current.play()
@@ -189,6 +216,7 @@ export default function NSender() {
       setVideoUrl(data.url);
       setLoaderStopRecording(false);
       setIsRecording(false);
+      setIsMerged(true);
     }
   }
 
@@ -222,7 +250,7 @@ export default function NSender() {
             <ArrowLeft className="w-5 h-5" />
             <span>Back to Home</span>
           </button>
-          
+            
           <div className="flex items-center space-x-4">
             <div className={`flex items-center space-x-2 px-3 py-1 rounded-full text-sm ${
               isConnected 
@@ -376,8 +404,45 @@ export default function NSender() {
                 )}
               </div>
             </div>
-
-            {/* Recorded Video */}
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+              <h3 className="text-lg font-semibold text-white mb-4">Get All Recordings</h3>
+              <div className="text-center text-gray-300">
+              <Video className="w-8 h-8 mx-auto mb-2 opacity-50" />                     
+                <button
+                  onClick={getAllVideos}
+                  className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-lg transition-colors">
+                  Get All Recordings
+                </button>                    
+                  </div>
+              </div>
+                        
+ {
+  allVideoUrls.map((vid:any)=>{
+    return (
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                <h3 className="text-lg font-semibold text-white mb-4">Your Recording</h3>
+                
+                <div className="space-y-4">
+                  <video
+                    src={vid.s3Url}
+                    controls
+                    className="w-full rounded-lg"
+                  />
+                  
+                  <button
+                    onClick={downloadVideo}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-xl font-medium transition-colors flex items-center justify-center space-x-2"
+                  >
+                    <Download className="w-5 h-5" />
+                    <span>Download Recording</span>
+                  </button>
+                </div>
+              </div>
+            )
+  })
+ }
+ 
+            {/* Recorded Video
             {videoUrl && (
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                 <h3 className="text-lg font-semibold text-white mb-4">Your Recording</h3>
@@ -398,7 +463,7 @@ export default function NSender() {
                   </button>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>

@@ -90,4 +90,13 @@ export async function sendFinalCallToEndOfRecordingApi(roomName:string,userType:
 }
 
 
-
+export async function getAllVideosApi(sessionId:string){ 
+    const response = await axios.get(`http://localhost:3001/api/v1/recordings/get-session-videos/${sessionId}`,
+      {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    return response;
+}
