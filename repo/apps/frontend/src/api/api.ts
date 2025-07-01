@@ -79,9 +79,9 @@ export async function sendChunksToBackend(formData:any){
     return response;
 }
 
-export async function sendFinalCallToEndOfRecordingApi(roomName:string,userType:string){
+export async function sendFinalCallToEndOfRecordingApi(roomName:string,userType:string,sessionId:string){
     const response = await axios.post(`http://localhost:3001/api/v1/recordings/merge-upload-s3`, 
-        { sessionId: roomName,userType }, {
+        { sessionName: roomName,userType,sessionId }, {
         headers: {
           Authorization: `Bearer ${token}`
         }

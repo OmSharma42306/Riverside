@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { 
   Video, 
-  Square, 
+  // Square, 
   Circle, 
   Download,
   ArrowLeft,
@@ -197,7 +197,7 @@ export default function NReceiver() {
       };
 
       async function sendFinalCallToEndOfRecording() {
-        const response = await sendFinalCallToEndOfRecordingApi(roomName,'receiver');
+        const response = await sendFinalCallToEndOfRecordingApi(roomName,'receiver',sessionId);
         const data = response.data;
         setVideoUrl(data.url);
         setLoaderStopRecording(false);
@@ -206,15 +206,15 @@ export default function NReceiver() {
     
   }
 
-  const handleStartRecording = () => {
-    console.log("handleStarteRecording called")
-    if (recorder) {
-      console.log("inside if rec am started!")
-      recorder.start(3000);
-      setIsRecording(true);
-      setRecordingDuration(0);
-    }
-  };
+  // const handleStartRecording = () => {
+  //   console.log("handleStarteRecording called")
+  //   if (recorder) {
+  //     console.log("inside if rec am started!")
+  //     recorder.start(3000);
+  //     setIsRecording(true);
+  //     setRecordingDuration(0);
+  //   }
+  // };
 
   useEffect(()=>{
     if(recorder && stopRecording){
@@ -225,14 +225,14 @@ export default function NReceiver() {
     }
   },[recorder,stopRecording])
 
-  const handleStopRecording = () => {
-    if (recorder) {
-      recorder.stop();
-      console.log("stopeed the recording!");
-      setLoaderStopRecording(true);
-       setIsRecording(false);
-    }
-  };
+  // const handleStopRecording = () => {
+  //   if (recorder) {
+  //     recorder.stop();
+  //     console.log("stopeed the recording!");
+  //     setLoaderStopRecording(true);
+  //      setIsRecording(false);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">

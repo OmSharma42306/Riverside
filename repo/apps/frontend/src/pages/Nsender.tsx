@@ -112,7 +112,7 @@ export default function NSender() {
 
   const getAllVideos = async () =>{
     try{
-      const response:any = getAllVideosApi(sessionId);
+      const response:any = await getAllVideosApi(sessionId);
       const data = response.data;
       console.log("Data:  ",data);
       const recordings = data.recordings;
@@ -210,7 +210,7 @@ export default function NSender() {
     };
 
     async function sendFinalCallToEndOfRecording() {
-      const response = await sendFinalCallToEndOfRecordingApi(roomName,'sender')
+      const response = await sendFinalCallToEndOfRecordingApi(roomName,'sender',sessionId)
       const data = response.data;
       console.log("URL ",data.url);
       setVideoUrl(data.url);
