@@ -33,6 +33,11 @@ export type Tracks = $Result.DefaultSelection<Prisma.$TracksPayload>
  * 
  */
 export type JoinSession = $Result.DefaultSelection<Prisma.$JoinSessionPayload>
+/**
+ * Model AllTracks
+ * 
+ */
+export type AllTracks = $Result.DefaultSelection<Prisma.$AllTracksPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -198,6 +203,16 @@ export class PrismaClient<
     * ```
     */
   get joinSession(): Prisma.JoinSessionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.allTracks`: Exposes CRUD operations for the **AllTracks** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AllTracks
+    * const allTracks = await prisma.allTracks.findMany()
+    * ```
+    */
+  get allTracks(): Prisma.AllTracksDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -641,7 +656,8 @@ export namespace Prisma {
     User: 'User',
     Sessions: 'Sessions',
     Tracks: 'Tracks',
-    JoinSession: 'JoinSession'
+    JoinSession: 'JoinSession',
+    AllTracks: 'AllTracks'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -660,7 +676,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "sessions" | "tracks" | "joinSession"
+      modelProps: "user" | "sessions" | "tracks" | "joinSession" | "allTracks"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -960,6 +976,80 @@ export namespace Prisma {
           }
         }
       }
+      AllTracks: {
+        payload: Prisma.$AllTracksPayload<ExtArgs>
+        fields: Prisma.AllTracksFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AllTracksFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AllTracksPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AllTracksFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AllTracksPayload>
+          }
+          findFirst: {
+            args: Prisma.AllTracksFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AllTracksPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AllTracksFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AllTracksPayload>
+          }
+          findMany: {
+            args: Prisma.AllTracksFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AllTracksPayload>[]
+          }
+          create: {
+            args: Prisma.AllTracksCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AllTracksPayload>
+          }
+          createMany: {
+            args: Prisma.AllTracksCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AllTracksCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AllTracksPayload>[]
+          }
+          delete: {
+            args: Prisma.AllTracksDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AllTracksPayload>
+          }
+          update: {
+            args: Prisma.AllTracksUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AllTracksPayload>
+          }
+          deleteMany: {
+            args: Prisma.AllTracksDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AllTracksUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AllTracksUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AllTracksPayload>[]
+          }
+          upsert: {
+            args: Prisma.AllTracksUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AllTracksPayload>
+          }
+          aggregate: {
+            args: Prisma.AllTracksAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAllTracks>
+          }
+          groupBy: {
+            args: Prisma.AllTracksGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AllTracksGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AllTracksCountArgs<ExtArgs>
+            result: $Utils.Optional<AllTracksCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1048,6 +1138,7 @@ export namespace Prisma {
     sessions?: SessionsOmit
     tracks?: TracksOmit
     joinSession?: JoinSessionOmit
+    allTracks?: AllTracksOmit
   }
 
   /* Types for Logging */
@@ -5722,6 +5813,1043 @@ export namespace Prisma {
 
 
   /**
+   * Model AllTracks
+   */
+
+  export type AggregateAllTracks = {
+    _count: AllTracksCountAggregateOutputType | null
+    _avg: AllTracksAvgAggregateOutputType | null
+    _sum: AllTracksSumAggregateOutputType | null
+    _min: AllTracksMinAggregateOutputType | null
+    _max: AllTracksMaxAggregateOutputType | null
+  }
+
+  export type AllTracksAvgAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    sessionId: number | null
+  }
+
+  export type AllTracksSumAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    sessionId: number | null
+  }
+
+  export type AllTracksMinAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    sessionId: number | null
+    senderTrack: string | null
+    receiverTrack: string | null
+  }
+
+  export type AllTracksMaxAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    sessionId: number | null
+    senderTrack: string | null
+    receiverTrack: string | null
+  }
+
+  export type AllTracksCountAggregateOutputType = {
+    id: number
+    userId: number
+    sessionId: number
+    senderTrack: number
+    receiverTrack: number
+    _all: number
+  }
+
+
+  export type AllTracksAvgAggregateInputType = {
+    id?: true
+    userId?: true
+    sessionId?: true
+  }
+
+  export type AllTracksSumAggregateInputType = {
+    id?: true
+    userId?: true
+    sessionId?: true
+  }
+
+  export type AllTracksMinAggregateInputType = {
+    id?: true
+    userId?: true
+    sessionId?: true
+    senderTrack?: true
+    receiverTrack?: true
+  }
+
+  export type AllTracksMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    sessionId?: true
+    senderTrack?: true
+    receiverTrack?: true
+  }
+
+  export type AllTracksCountAggregateInputType = {
+    id?: true
+    userId?: true
+    sessionId?: true
+    senderTrack?: true
+    receiverTrack?: true
+    _all?: true
+  }
+
+  export type AllTracksAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AllTracks to aggregate.
+     */
+    where?: AllTracksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AllTracks to fetch.
+     */
+    orderBy?: AllTracksOrderByWithRelationInput | AllTracksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AllTracksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AllTracks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AllTracks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AllTracks
+    **/
+    _count?: true | AllTracksCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AllTracksAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AllTracksSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AllTracksMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AllTracksMaxAggregateInputType
+  }
+
+  export type GetAllTracksAggregateType<T extends AllTracksAggregateArgs> = {
+        [P in keyof T & keyof AggregateAllTracks]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAllTracks[P]>
+      : GetScalarType<T[P], AggregateAllTracks[P]>
+  }
+
+
+
+
+  export type AllTracksGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AllTracksWhereInput
+    orderBy?: AllTracksOrderByWithAggregationInput | AllTracksOrderByWithAggregationInput[]
+    by: AllTracksScalarFieldEnum[] | AllTracksScalarFieldEnum
+    having?: AllTracksScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AllTracksCountAggregateInputType | true
+    _avg?: AllTracksAvgAggregateInputType
+    _sum?: AllTracksSumAggregateInputType
+    _min?: AllTracksMinAggregateInputType
+    _max?: AllTracksMaxAggregateInputType
+  }
+
+  export type AllTracksGroupByOutputType = {
+    id: number
+    userId: number
+    sessionId: number
+    senderTrack: string | null
+    receiverTrack: string | null
+    _count: AllTracksCountAggregateOutputType | null
+    _avg: AllTracksAvgAggregateOutputType | null
+    _sum: AllTracksSumAggregateOutputType | null
+    _min: AllTracksMinAggregateOutputType | null
+    _max: AllTracksMaxAggregateOutputType | null
+  }
+
+  type GetAllTracksGroupByPayload<T extends AllTracksGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AllTracksGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AllTracksGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AllTracksGroupByOutputType[P]>
+            : GetScalarType<T[P], AllTracksGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AllTracksSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    senderTrack?: boolean
+    receiverTrack?: boolean
+  }, ExtArgs["result"]["allTracks"]>
+
+  export type AllTracksSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    senderTrack?: boolean
+    receiverTrack?: boolean
+  }, ExtArgs["result"]["allTracks"]>
+
+  export type AllTracksSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    senderTrack?: boolean
+    receiverTrack?: boolean
+  }, ExtArgs["result"]["allTracks"]>
+
+  export type AllTracksSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    senderTrack?: boolean
+    receiverTrack?: boolean
+  }
+
+  export type AllTracksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "sessionId" | "senderTrack" | "receiverTrack", ExtArgs["result"]["allTracks"]>
+
+  export type $AllTracksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AllTracks"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      userId: number
+      sessionId: number
+      senderTrack: string | null
+      receiverTrack: string | null
+    }, ExtArgs["result"]["allTracks"]>
+    composites: {}
+  }
+
+  type AllTracksGetPayload<S extends boolean | null | undefined | AllTracksDefaultArgs> = $Result.GetResult<Prisma.$AllTracksPayload, S>
+
+  type AllTracksCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AllTracksFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AllTracksCountAggregateInputType | true
+    }
+
+  export interface AllTracksDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AllTracks'], meta: { name: 'AllTracks' } }
+    /**
+     * Find zero or one AllTracks that matches the filter.
+     * @param {AllTracksFindUniqueArgs} args - Arguments to find a AllTracks
+     * @example
+     * // Get one AllTracks
+     * const allTracks = await prisma.allTracks.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AllTracksFindUniqueArgs>(args: SelectSubset<T, AllTracksFindUniqueArgs<ExtArgs>>): Prisma__AllTracksClient<$Result.GetResult<Prisma.$AllTracksPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AllTracks that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AllTracksFindUniqueOrThrowArgs} args - Arguments to find a AllTracks
+     * @example
+     * // Get one AllTracks
+     * const allTracks = await prisma.allTracks.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AllTracksFindUniqueOrThrowArgs>(args: SelectSubset<T, AllTracksFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AllTracksClient<$Result.GetResult<Prisma.$AllTracksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AllTracks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AllTracksFindFirstArgs} args - Arguments to find a AllTracks
+     * @example
+     * // Get one AllTracks
+     * const allTracks = await prisma.allTracks.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AllTracksFindFirstArgs>(args?: SelectSubset<T, AllTracksFindFirstArgs<ExtArgs>>): Prisma__AllTracksClient<$Result.GetResult<Prisma.$AllTracksPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AllTracks that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AllTracksFindFirstOrThrowArgs} args - Arguments to find a AllTracks
+     * @example
+     * // Get one AllTracks
+     * const allTracks = await prisma.allTracks.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AllTracksFindFirstOrThrowArgs>(args?: SelectSubset<T, AllTracksFindFirstOrThrowArgs<ExtArgs>>): Prisma__AllTracksClient<$Result.GetResult<Prisma.$AllTracksPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AllTracks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AllTracksFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AllTracks
+     * const allTracks = await prisma.allTracks.findMany()
+     * 
+     * // Get first 10 AllTracks
+     * const allTracks = await prisma.allTracks.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const allTracksWithIdOnly = await prisma.allTracks.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AllTracksFindManyArgs>(args?: SelectSubset<T, AllTracksFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AllTracksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AllTracks.
+     * @param {AllTracksCreateArgs} args - Arguments to create a AllTracks.
+     * @example
+     * // Create one AllTracks
+     * const AllTracks = await prisma.allTracks.create({
+     *   data: {
+     *     // ... data to create a AllTracks
+     *   }
+     * })
+     * 
+     */
+    create<T extends AllTracksCreateArgs>(args: SelectSubset<T, AllTracksCreateArgs<ExtArgs>>): Prisma__AllTracksClient<$Result.GetResult<Prisma.$AllTracksPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AllTracks.
+     * @param {AllTracksCreateManyArgs} args - Arguments to create many AllTracks.
+     * @example
+     * // Create many AllTracks
+     * const allTracks = await prisma.allTracks.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AllTracksCreateManyArgs>(args?: SelectSubset<T, AllTracksCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AllTracks and returns the data saved in the database.
+     * @param {AllTracksCreateManyAndReturnArgs} args - Arguments to create many AllTracks.
+     * @example
+     * // Create many AllTracks
+     * const allTracks = await prisma.allTracks.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AllTracks and only return the `id`
+     * const allTracksWithIdOnly = await prisma.allTracks.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AllTracksCreateManyAndReturnArgs>(args?: SelectSubset<T, AllTracksCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AllTracksPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AllTracks.
+     * @param {AllTracksDeleteArgs} args - Arguments to delete one AllTracks.
+     * @example
+     * // Delete one AllTracks
+     * const AllTracks = await prisma.allTracks.delete({
+     *   where: {
+     *     // ... filter to delete one AllTracks
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AllTracksDeleteArgs>(args: SelectSubset<T, AllTracksDeleteArgs<ExtArgs>>): Prisma__AllTracksClient<$Result.GetResult<Prisma.$AllTracksPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AllTracks.
+     * @param {AllTracksUpdateArgs} args - Arguments to update one AllTracks.
+     * @example
+     * // Update one AllTracks
+     * const allTracks = await prisma.allTracks.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AllTracksUpdateArgs>(args: SelectSubset<T, AllTracksUpdateArgs<ExtArgs>>): Prisma__AllTracksClient<$Result.GetResult<Prisma.$AllTracksPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AllTracks.
+     * @param {AllTracksDeleteManyArgs} args - Arguments to filter AllTracks to delete.
+     * @example
+     * // Delete a few AllTracks
+     * const { count } = await prisma.allTracks.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AllTracksDeleteManyArgs>(args?: SelectSubset<T, AllTracksDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AllTracks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AllTracksUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AllTracks
+     * const allTracks = await prisma.allTracks.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AllTracksUpdateManyArgs>(args: SelectSubset<T, AllTracksUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AllTracks and returns the data updated in the database.
+     * @param {AllTracksUpdateManyAndReturnArgs} args - Arguments to update many AllTracks.
+     * @example
+     * // Update many AllTracks
+     * const allTracks = await prisma.allTracks.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AllTracks and only return the `id`
+     * const allTracksWithIdOnly = await prisma.allTracks.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AllTracksUpdateManyAndReturnArgs>(args: SelectSubset<T, AllTracksUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AllTracksPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AllTracks.
+     * @param {AllTracksUpsertArgs} args - Arguments to update or create a AllTracks.
+     * @example
+     * // Update or create a AllTracks
+     * const allTracks = await prisma.allTracks.upsert({
+     *   create: {
+     *     // ... data to create a AllTracks
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AllTracks we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AllTracksUpsertArgs>(args: SelectSubset<T, AllTracksUpsertArgs<ExtArgs>>): Prisma__AllTracksClient<$Result.GetResult<Prisma.$AllTracksPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AllTracks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AllTracksCountArgs} args - Arguments to filter AllTracks to count.
+     * @example
+     * // Count the number of AllTracks
+     * const count = await prisma.allTracks.count({
+     *   where: {
+     *     // ... the filter for the AllTracks we want to count
+     *   }
+     * })
+    **/
+    count<T extends AllTracksCountArgs>(
+      args?: Subset<T, AllTracksCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AllTracksCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AllTracks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AllTracksAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AllTracksAggregateArgs>(args: Subset<T, AllTracksAggregateArgs>): Prisma.PrismaPromise<GetAllTracksAggregateType<T>>
+
+    /**
+     * Group by AllTracks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AllTracksGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AllTracksGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AllTracksGroupByArgs['orderBy'] }
+        : { orderBy?: AllTracksGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AllTracksGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAllTracksGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AllTracks model
+   */
+  readonly fields: AllTracksFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AllTracks.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AllTracksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AllTracks model
+   */
+  interface AllTracksFieldRefs {
+    readonly id: FieldRef<"AllTracks", 'Int'>
+    readonly userId: FieldRef<"AllTracks", 'Int'>
+    readonly sessionId: FieldRef<"AllTracks", 'Int'>
+    readonly senderTrack: FieldRef<"AllTracks", 'String'>
+    readonly receiverTrack: FieldRef<"AllTracks", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AllTracks findUnique
+   */
+  export type AllTracksFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AllTracks
+     */
+    select?: AllTracksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AllTracks
+     */
+    omit?: AllTracksOmit<ExtArgs> | null
+    /**
+     * Filter, which AllTracks to fetch.
+     */
+    where: AllTracksWhereUniqueInput
+  }
+
+  /**
+   * AllTracks findUniqueOrThrow
+   */
+  export type AllTracksFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AllTracks
+     */
+    select?: AllTracksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AllTracks
+     */
+    omit?: AllTracksOmit<ExtArgs> | null
+    /**
+     * Filter, which AllTracks to fetch.
+     */
+    where: AllTracksWhereUniqueInput
+  }
+
+  /**
+   * AllTracks findFirst
+   */
+  export type AllTracksFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AllTracks
+     */
+    select?: AllTracksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AllTracks
+     */
+    omit?: AllTracksOmit<ExtArgs> | null
+    /**
+     * Filter, which AllTracks to fetch.
+     */
+    where?: AllTracksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AllTracks to fetch.
+     */
+    orderBy?: AllTracksOrderByWithRelationInput | AllTracksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AllTracks.
+     */
+    cursor?: AllTracksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AllTracks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AllTracks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AllTracks.
+     */
+    distinct?: AllTracksScalarFieldEnum | AllTracksScalarFieldEnum[]
+  }
+
+  /**
+   * AllTracks findFirstOrThrow
+   */
+  export type AllTracksFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AllTracks
+     */
+    select?: AllTracksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AllTracks
+     */
+    omit?: AllTracksOmit<ExtArgs> | null
+    /**
+     * Filter, which AllTracks to fetch.
+     */
+    where?: AllTracksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AllTracks to fetch.
+     */
+    orderBy?: AllTracksOrderByWithRelationInput | AllTracksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AllTracks.
+     */
+    cursor?: AllTracksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AllTracks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AllTracks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AllTracks.
+     */
+    distinct?: AllTracksScalarFieldEnum | AllTracksScalarFieldEnum[]
+  }
+
+  /**
+   * AllTracks findMany
+   */
+  export type AllTracksFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AllTracks
+     */
+    select?: AllTracksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AllTracks
+     */
+    omit?: AllTracksOmit<ExtArgs> | null
+    /**
+     * Filter, which AllTracks to fetch.
+     */
+    where?: AllTracksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AllTracks to fetch.
+     */
+    orderBy?: AllTracksOrderByWithRelationInput | AllTracksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AllTracks.
+     */
+    cursor?: AllTracksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AllTracks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AllTracks.
+     */
+    skip?: number
+    distinct?: AllTracksScalarFieldEnum | AllTracksScalarFieldEnum[]
+  }
+
+  /**
+   * AllTracks create
+   */
+  export type AllTracksCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AllTracks
+     */
+    select?: AllTracksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AllTracks
+     */
+    omit?: AllTracksOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AllTracks.
+     */
+    data: XOR<AllTracksCreateInput, AllTracksUncheckedCreateInput>
+  }
+
+  /**
+   * AllTracks createMany
+   */
+  export type AllTracksCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AllTracks.
+     */
+    data: AllTracksCreateManyInput | AllTracksCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AllTracks createManyAndReturn
+   */
+  export type AllTracksCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AllTracks
+     */
+    select?: AllTracksSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AllTracks
+     */
+    omit?: AllTracksOmit<ExtArgs> | null
+    /**
+     * The data used to create many AllTracks.
+     */
+    data: AllTracksCreateManyInput | AllTracksCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AllTracks update
+   */
+  export type AllTracksUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AllTracks
+     */
+    select?: AllTracksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AllTracks
+     */
+    omit?: AllTracksOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AllTracks.
+     */
+    data: XOR<AllTracksUpdateInput, AllTracksUncheckedUpdateInput>
+    /**
+     * Choose, which AllTracks to update.
+     */
+    where: AllTracksWhereUniqueInput
+  }
+
+  /**
+   * AllTracks updateMany
+   */
+  export type AllTracksUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AllTracks.
+     */
+    data: XOR<AllTracksUpdateManyMutationInput, AllTracksUncheckedUpdateManyInput>
+    /**
+     * Filter which AllTracks to update
+     */
+    where?: AllTracksWhereInput
+    /**
+     * Limit how many AllTracks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AllTracks updateManyAndReturn
+   */
+  export type AllTracksUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AllTracks
+     */
+    select?: AllTracksSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AllTracks
+     */
+    omit?: AllTracksOmit<ExtArgs> | null
+    /**
+     * The data used to update AllTracks.
+     */
+    data: XOR<AllTracksUpdateManyMutationInput, AllTracksUncheckedUpdateManyInput>
+    /**
+     * Filter which AllTracks to update
+     */
+    where?: AllTracksWhereInput
+    /**
+     * Limit how many AllTracks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AllTracks upsert
+   */
+  export type AllTracksUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AllTracks
+     */
+    select?: AllTracksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AllTracks
+     */
+    omit?: AllTracksOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AllTracks to update in case it exists.
+     */
+    where: AllTracksWhereUniqueInput
+    /**
+     * In case the AllTracks found by the `where` argument doesn't exist, create a new AllTracks with this data.
+     */
+    create: XOR<AllTracksCreateInput, AllTracksUncheckedCreateInput>
+    /**
+     * In case the AllTracks was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AllTracksUpdateInput, AllTracksUncheckedUpdateInput>
+  }
+
+  /**
+   * AllTracks delete
+   */
+  export type AllTracksDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AllTracks
+     */
+    select?: AllTracksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AllTracks
+     */
+    omit?: AllTracksOmit<ExtArgs> | null
+    /**
+     * Filter which AllTracks to delete.
+     */
+    where: AllTracksWhereUniqueInput
+  }
+
+  /**
+   * AllTracks deleteMany
+   */
+  export type AllTracksDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AllTracks to delete
+     */
+    where?: AllTracksWhereInput
+    /**
+     * Limit how many AllTracks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AllTracks without action
+   */
+  export type AllTracksDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AllTracks
+     */
+    select?: AllTracksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AllTracks
+     */
+    omit?: AllTracksOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -5776,6 +6904,17 @@ export namespace Prisma {
   export type JoinSessionScalarFieldEnum = (typeof JoinSessionScalarFieldEnum)[keyof typeof JoinSessionScalarFieldEnum]
 
 
+  export const AllTracksScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    sessionId: 'sessionId',
+    senderTrack: 'senderTrack',
+    receiverTrack: 'receiverTrack'
+  };
+
+  export type AllTracksScalarFieldEnum = (typeof AllTracksScalarFieldEnum)[keyof typeof AllTracksScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -5790,6 +6929,14 @@ export namespace Prisma {
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -6087,6 +7234,60 @@ export namespace Prisma {
     joinedAt?: DateTimeWithAggregatesFilter<"JoinSession"> | Date | string
   }
 
+  export type AllTracksWhereInput = {
+    AND?: AllTracksWhereInput | AllTracksWhereInput[]
+    OR?: AllTracksWhereInput[]
+    NOT?: AllTracksWhereInput | AllTracksWhereInput[]
+    id?: IntFilter<"AllTracks"> | number
+    userId?: IntFilter<"AllTracks"> | number
+    sessionId?: IntFilter<"AllTracks"> | number
+    senderTrack?: StringNullableFilter<"AllTracks"> | string | null
+    receiverTrack?: StringNullableFilter<"AllTracks"> | string | null
+  }
+
+  export type AllTracksOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    senderTrack?: SortOrderInput | SortOrder
+    receiverTrack?: SortOrderInput | SortOrder
+  }
+
+  export type AllTracksWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: AllTracksWhereInput | AllTracksWhereInput[]
+    OR?: AllTracksWhereInput[]
+    NOT?: AllTracksWhereInput | AllTracksWhereInput[]
+    userId?: IntFilter<"AllTracks"> | number
+    sessionId?: IntFilter<"AllTracks"> | number
+    senderTrack?: StringNullableFilter<"AllTracks"> | string | null
+    receiverTrack?: StringNullableFilter<"AllTracks"> | string | null
+  }, "id">
+
+  export type AllTracksOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    senderTrack?: SortOrderInput | SortOrder
+    receiverTrack?: SortOrderInput | SortOrder
+    _count?: AllTracksCountOrderByAggregateInput
+    _avg?: AllTracksAvgOrderByAggregateInput
+    _max?: AllTracksMaxOrderByAggregateInput
+    _min?: AllTracksMinOrderByAggregateInput
+    _sum?: AllTracksSumOrderByAggregateInput
+  }
+
+  export type AllTracksScalarWhereWithAggregatesInput = {
+    AND?: AllTracksScalarWhereWithAggregatesInput | AllTracksScalarWhereWithAggregatesInput[]
+    OR?: AllTracksScalarWhereWithAggregatesInput[]
+    NOT?: AllTracksScalarWhereWithAggregatesInput | AllTracksScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"AllTracks"> | number
+    userId?: IntWithAggregatesFilter<"AllTracks"> | number
+    sessionId?: IntWithAggregatesFilter<"AllTracks"> | number
+    senderTrack?: StringNullableWithAggregatesFilter<"AllTracks"> | string | null
+    receiverTrack?: StringNullableWithAggregatesFilter<"AllTracks"> | string | null
+  }
+
   export type UserCreateInput = {
     name: string
     email: string
@@ -6291,6 +7492,59 @@ export namespace Prisma {
     userId?: IntFieldUpdateOperationsInput | number
     sessionId?: IntFieldUpdateOperationsInput | number
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AllTracksCreateInput = {
+    userId: number
+    sessionId: number
+    senderTrack?: string | null
+    receiverTrack?: string | null
+  }
+
+  export type AllTracksUncheckedCreateInput = {
+    id?: number
+    userId: number
+    sessionId: number
+    senderTrack?: string | null
+    receiverTrack?: string | null
+  }
+
+  export type AllTracksUpdateInput = {
+    userId?: IntFieldUpdateOperationsInput | number
+    sessionId?: IntFieldUpdateOperationsInput | number
+    senderTrack?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverTrack?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AllTracksUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    sessionId?: IntFieldUpdateOperationsInput | number
+    senderTrack?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverTrack?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AllTracksCreateManyInput = {
+    id?: number
+    userId: number
+    sessionId: number
+    senderTrack?: string | null
+    receiverTrack?: string | null
+  }
+
+  export type AllTracksUpdateManyMutationInput = {
+    userId?: IntFieldUpdateOperationsInput | number
+    sessionId?: IntFieldUpdateOperationsInput | number
+    senderTrack?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverTrack?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AllTracksUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    sessionId?: IntFieldUpdateOperationsInput | number
+    senderTrack?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverTrack?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -6545,6 +7799,80 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
+  export type AllTracksCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    senderTrack?: SortOrder
+    receiverTrack?: SortOrder
+  }
+
+  export type AllTracksAvgOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+  }
+
+  export type AllTracksMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    senderTrack?: SortOrder
+    receiverTrack?: SortOrder
+  }
+
+  export type AllTracksMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    senderTrack?: SortOrder
+    receiverTrack?: SortOrder
+  }
+
+  export type AllTracksSumOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type SessionsCreateNestedManyWithoutUserInput = {
@@ -6843,6 +8171,10 @@ export namespace Prisma {
     update?: XOR<XOR<SessionsUpdateToOneWithWhereWithoutJoinSessionInput, SessionsUpdateWithoutJoinSessionInput>, SessionsUncheckedUpdateWithoutJoinSessionInput>
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -6935,6 +8267,48 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type SessionsCreateWithoutUserInput = {

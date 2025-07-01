@@ -149,6 +149,14 @@ exports.Prisma.JoinSessionScalarFieldEnum = {
   joinedAt: 'joinedAt'
 };
 
+exports.Prisma.AllTracksScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  sessionId: 'sessionId',
+  senderTrack: 'senderTrack',
+  receiverTrack: 'receiverTrack'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -159,12 +167,18 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
   User: 'User',
   Sessions: 'Sessions',
   Tracks: 'Tracks',
-  JoinSession: 'JoinSession'
+  JoinSession: 'JoinSession',
+  AllTracks: 'AllTracks'
 };
 
 /**
