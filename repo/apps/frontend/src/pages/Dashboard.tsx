@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mic, Plus, Video, Clock, Search, Settings, Filter, Play, Edit, Trash2, Download } from 'lucide-react';
 import Header from '@repo/ui/Header';
+import { fetchAllSessions } from '../api/api';
+import type { SessionType } from '../types';
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('recent');
   const navigate = useNavigate();
-  
+  const [sessions,setSessions] = useState<SessionType[]>([]);
   const recordings = [
     {
       id: 1,
@@ -49,10 +51,18 @@ const Dashboard: React.FC = () => {
       status: 'completed'
     },
   ];
-  
-  const handleRecordingAction = (action: string, id: number) => {
+  useEffect(()=>{
+    async function runFetchAllSessions(){
+      const response = await fetchAllSessions();
+      console.log(response.data);
+      setSessions(response.data.sessions);
+    }
+    runFetchAllSessions();
+  },[])
+
+  const handleRecordingAction = async (action: string, id: number) => {
     console.log(`${action} recording ${id}`);
-    // In a real app, you would implement these actions
+    
   };
 
   return (
@@ -175,7 +185,7 @@ const Dashboard: React.FC = () => {
           </div>
           
           {/* Recordings Table */}
-          <div className="bg-gray-800 rounded-xl overflow-hidden mb-8">
+          {/* <div className="bg-gray-800 rounded-xl overflow-hidden mb-8">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -257,6 +267,46 @@ const Dashboard: React.FC = () => {
                       </td>
                     </tr>
                   ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          */}
+  
+          <div className="bg-gray-800 rounded-xl overflow-hidden mb-8">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-850">
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Title</th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date</th>
+                    
+                  </tr>
+                </thead>
+                
+                <tbody className="divide-y divide-gray-700">
+                  { sessions && sessions.length > 0 ? sessions.map((session) => (
+                    <tr key={session.id.toString()} className="hover:bg-gray-750 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                         
+                          <div className="ml-4">
+                            <div className="text-sm font-medium">{session.sessionName}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{session.sessionCode}</td>  
+                  <button onClick={()=>navigate('/recentSession',{state:{sessionId:session.id}})}>Open Session</button>
+                  </tr>
+                  
+                  )): <tr className="bg-gray-850">
+                    <td className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">No Recordings.</td>
+                    <td className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">No Recordindwqgs.</td>
+                    
+                    
+                  </tr>} 
+                  
                 </tbody>
               </table>
             </div>
