@@ -15,6 +15,7 @@ import Home from './pages/Home';
 
 import NSender from './pages/Nsender';
 import NReceiver from './pages/Nreceiver';
+import RecentSession from './pages/RecentSession';
 
 function App() {
   
@@ -35,6 +36,7 @@ function App() {
       <Route path='/home' element=<Home></Home>></Route>
       <Route path='/nsender' element=<NSender></NSender>></Route>
       <Route path='/nreceiver' element={<NReceiver/>}></Route>
+      <Route path='/recentSession' element={<RecentSession/>}></Route>
     </Routes>
   )
 }
