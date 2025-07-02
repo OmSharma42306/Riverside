@@ -59,7 +59,7 @@ router.post('/joinSession',authMiddleware,async(req:authRequest,res:Response)=>{
 })
 
 // add particular session api.
-router.get('/get-session/:id',async(req:authRequest,res:Response)=>{
+router.get('/get-session/:id',authMiddleware,async(req:authRequest,res:Response)=>{
     const sessionCode = req.params.id;
     
     try{
