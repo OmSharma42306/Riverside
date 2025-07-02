@@ -13,8 +13,7 @@ export async function fetchAllSessions() {
       },
     }
   );
-  console.log(response.data);
-  return response.data;
+  return response;
 }
 
 export async function createSession(sessionName: string) {

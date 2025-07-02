@@ -46,3 +46,11 @@ export interface Project {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface SessionType{
+  id : Number;
+  userId : Number;
+  sessionCode : string;
+  sessionName : string;
+}
+
