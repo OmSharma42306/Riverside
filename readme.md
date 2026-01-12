@@ -29,3 +29,14 @@ A minimal Riverside.fm clone (version 1) built using WebRTC, MediaRecorder, WebS
 ```bash
 git clone https://github.com/OmSharma42306/Riverside.git
 cd Riverside
+cd repo
+1) npm install
+2) cd packages/db
+    - npx prisma generate
+    - tsc -b
+    - copy that genrated folder into dist
+3) npm run dev
+4) start the Worker... 
+    - cd apps/backend-server
+    - cd dist/workers
+    - node mergeWorker.js
