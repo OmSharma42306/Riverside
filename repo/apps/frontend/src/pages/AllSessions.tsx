@@ -1,99 +1,201 @@
-import { Link } from 'react-router-dom';
-import { Mic, Copy, ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  Mic,
+  Copy,
+  ArrowRight,
+  Plus,
+  Radio,
+  ArrowLeft,
+  CheckCircle2,
+  FolderOpen,
+  Loader2,
+} from 'lucide-react';
+import Header from '@repo/ui/Header';
+import Footer from '@repo/ui/Footer';
 import { fetchAllSessions } from '../api/api';
 
-interface SessionsType{
-  id:number;
+interface SessionsType {
+  id: number;
   userId: number;
   sessionCode: string;
   sessionName: string;
 }
 
-
 export default function AllSessions() {
-  const [sessions,setSessions] = useState<SessionsType[]>([]);
-  
-  useEffect(()=>{
-    async function getSessions(){
-      const data = await fetchAllSessions();
-      setSessions(data.sessions)
+  const [sessions, setSessions] = useState<SessionsType[]>([]);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function getSessions() {
+      setIsLoading(true);
+      try {
+        const response = await fetchAllSessions();
+        if (response.data && response.data.sessions) {
+          setSessions(response.data.sessions);
+        }
+      } catch (err) {
+        console.error('Failed to fetch sessions:', err);
+      } finally {
+        setIsLoading(false);
+      }
     }
     getSessions();
-  
-  },[])
-  
+  }, []);
+
   const copySessionCode = (code: string) => {
     navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+    setTimeout(() => setCopiedCode(null), 2000);
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-white">Your Sessions</h1>
-          <Link 
-            to="/create-session" 
-            className="btn btn-primary flex items-center"
-          >
-            <Mic size={18} className="mr-2" />
-            New Session
-          </Link>
-        </div>
+    <div className="min-h-screen bg-[#07080b] text-slate-100 flex flex-col justify-between font-sans relative overflow-hidden">
+      <Header />
 
-        {sessions && sessions.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sessions.map((session) => (
-              <div 
-                key={session.id}
-                className="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors border border-gray-700"
+      {/* Atmospheric ambient glows */}
+      <div className="absolute top-[80px] left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-indigo-600/10 rounded-full blur-[160px] pointer-events-none" />
+
+      <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10 space-y-8">
+        {/* Top Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.06]">
+          <div className="space-y-2">
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="inline-flex items-center text-xs font-medium text-zinc-400 hover:text-white transition-colors group"
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h2 className="text-xl font-semibold text-white mb-2">
-                      {session.sessionName}
-                    </h2>
-                    <div className="flex items-center space-x-2 text-sm text-gray-400">
-                      <span>Session Code:</span>
-                      <code className="bg-gray-900 px-2 py-1 rounded">
-                        {session.sessionCode.slice(0, 8)}...
-                      </code>
-                      <button 
-                        onClick={() => copySessionCode(session.sessionCode)}
-                        className="text-indigo-400 hover:text-indigo-300 transition-colors"
-                        title="Copy session code"
-                      >
-                        <Copy size={14} />
-                      </button>
-                    </div>
-                  </div>
+                <div className="w-7 h-7 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mr-2 group-hover:border-white/20 transition-colors">
+                  <ArrowLeft className="w-3.5 h-3.5" />
                 </div>
-                
-                <div className="mt-4 pt-4 border-t border-gray-700">
-                  <Link
-                    to={`/session/${session.sessionCode}`}
-                    className="flex items-center justify-center text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
-                  >
-                    Join Session
-                    <ArrowRight size={16} className="ml-2" />
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Mic size={24} className="text-gray-400" />
+                <span>Dashboard</span>
+              </button>
+              <span className="text-zinc-600">•</span>
+              <span className="text-xs font-mono text-zinc-400">All Archive</span>
             </div>
-            <h3 className="text-xl font-medium text-gray-300 mb-2">No sessions yet</h3>
-            <p className="text-gray-400 mb-6">Create your first recording session to get started</p>
-            <Link to="/create-session" className="btn btn-primary">
-              Create New Session
+
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              Studio Session Directory
+            </h1>
+            <p className="text-xs sm:text-sm text-zinc-400">
+              Browse your complete history of remote recording sessions.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Link
+              to="/createSession"
+              className="btn-luxury btn-luxury-primary text-xs py-2 px-4 flex items-center gap-1.5"
+            >
+              <Plus className="w-4 h-4" />
+              <span>New Session</span>
             </Link>
           </div>
-        )}
-      </div>
+        </div>
+
+        {/* Sessions Grid */}
+        <div>
+          {isLoading ? (
+            <div className="py-24 text-center space-y-3">
+              <Loader2 className="w-8 h-8 text-indigo-400 animate-spin mx-auto" />
+              <p className="text-xs text-zinc-400">Loading your production sessions...</p>
+            </div>
+          ) : sessions && sessions.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {sessions.map((session) => (
+                <div
+                  key={session.id}
+                  className="obsidian-card p-6 border-white/[0.08] obsidian-card-hover flex flex-col justify-between"
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold text-sm">
+                        <Mic className="w-4 h-4" />
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-500 bg-white/[0.04] px-2 py-0.5 rounded border border-white/[0.06]">
+                        ID #{session.id}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h2 className="text-base font-bold text-white tracking-tight">
+                        {session.sessionName}
+                      </h2>
+                      <div className="flex items-center space-x-2 text-xs text-zinc-400 mt-2 font-mono">
+                        <span className="bg-black/40 px-2 py-1 rounded border border-white/5 truncate max-w-[150px]">
+                          {session.sessionCode}
+                        </span>
+                        <button
+                          onClick={() => copySessionCode(session.sessionCode)}
+                          className="text-indigo-400 hover:text-indigo-300 transition-colors p-1"
+                          title="Copy session code"
+                        >
+                          {copiedCode === session.sessionCode ? (
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                          ) : (
+                            <Copy className="w-4 h-4" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-white/[0.06] flex items-center justify-between">
+                    <button
+                      onClick={() =>
+                        navigate('/nsender', {
+                          state: { sessionCode: session.sessionCode, sessionid: session.id },
+                        })
+                      }
+                      className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors"
+                    >
+                      <Radio className="w-3.5 h-3.5" />
+                      <span>Host Studio</span>
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        navigate('/recentSession', {
+                          state: { sessionId: session.id },
+                        })
+                      }
+                      className="text-xs font-medium text-zinc-400 hover:text-white flex items-center gap-1 transition-colors"
+                    >
+                      <span>Tracks</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="obsidian-card p-16 text-center space-y-4 border-white/[0.08]">
+              <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mx-auto shadow-inner">
+                <FolderOpen className="w-7 h-7" />
+              </div>
+              <div className="space-y-1 max-w-sm mx-auto">
+                <h3 className="text-base font-bold text-white">No Sessions Found</h3>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  You haven’t created any recording sessions yet.
+                </p>
+              </div>
+              <div>
+                <Link
+                  to="/createSession"
+                  className="btn-luxury btn-luxury-primary text-xs py-2.5 px-5 inline-flex items-center gap-2 mt-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Create New Session</span>
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }

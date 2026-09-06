@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mic, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Mic, Mail, Lock, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 import Footer from '@repo/ui/Footer';
 import { login } from '../api/api';
 
@@ -11,154 +11,169 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async(e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
+
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setError('Please fill in both email and password');
       return;
     }
-    
+
     setIsLoading(true);
-    try{
-      const response = await login(email,password);
+    try {
+      const response = await login(email, password);
       const data = response.data;
       console.log(data);
-      localStorage.setItem("JWT",data.token);
-      if(response.status===200){
+      localStorage.setItem('JWT', data.token);
+      if (response.status === 200) {
         navigate('/dashboard');
       }
-      
-      
-    }catch(error){
-      // @ts-ignore
-      if(error.response){
-        // @ts-ignore
-        const status = error.response.status;
-        // @ts-ignore
-        const message = error.response.data.msg;
+    } catch (err: any) {
+      if (err.response) {
+        const status = err.response.status;
+        const message = err.response.data?.msg || err.response.data?.error || err.response.msg;
 
-        console.log("Status : ",status)
-        console.log("Message : ",message)
+        console.log('Status : ', status);
+        console.log('Message : ', message);
 
-        if(status === 400){
-        setError(message || "Invalid Format!");
-        setIsLoading(false)
-      }else{
-        setError(message || "Something Went Wrong!")
-         setIsLoading(false)
+        if (status === 400) {
+          setError(typeof message === 'string' ? message : 'Invalid email or password');
+        } else {
+          setError('Unable to log in. Please check your connection and credentials.');
+        }
+      } else {
+        setError('Network error. Please make sure the backend server is running.');
       }
-      }
+    } finally {
+      setIsLoading(false);
     }
-    
-      
-    
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex flex-col md:flex-row flex-grow">
-        {/* Left side - Form */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center p-8 md:p-16">
-          <div className="max-w-md mx-auto w-full">
-            <Link to="/" className="flex items-center space-x-2 mb-10">
-              <Mic size={32} className="text-indigo-500" />
-              <span className="text-2xl font-bold">RiverSide</span>
-            </Link>
-            
-            <h1 className="text-3xl font-bold mb-2">Welcome back</h1>
-            <p className="text-gray-400 mb-8">Log in to your account to continue</p>
-            
+    <div className="min-h-screen bg-[#07080b] text-slate-100 flex flex-col justify-between relative overflow-hidden font-sans">
+      {/* Ambient background glows */}
+      <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-indigo-600/15 rounded-full blur-[140px] pointer-events-none" />
+
+      {/* Header Bar */}
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between relative z-10">
+        <Link
+          to="/"
+          className="inline-flex items-center text-xs font-medium text-zinc-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
+          <span>Back to Home</span>
+        </Link>
+
+        <Link to="/" className="flex items-center space-x-2">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md shadow-indigo-500/20 border border-white/20">
+            <Mic className="w-4 h-4 text-white" />
+          </div>
+          <span className="text-base font-bold text-white tracking-tight">RiverSide Studio</span>
+        </Link>
+        <div className="w-20 hidden sm:block" />
+      </div>
+
+      {/* Auth Card Container */}
+      <main className="flex-grow flex items-center justify-center p-4 sm:p-6 relative z-10">
+        <div className="w-full max-w-md">
+          <div className="obsidian-card p-8 sm:p-10 shadow-2xl border border-white/[0.08]">
+            {/* Card Header */}
+            <div className="text-center mb-8 space-y-2">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                Welcome Back
+              </h1>
+              <p className="text-xs sm:text-sm text-zinc-400">
+                Log in to access your studio sessions and multi-track recordings
+              </p>
+            </div>
+
+            {/* Error Notification */}
             {error && (
-              <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded-lg flex items-start mb-6">
-                <AlertCircle size={20} className="mr-3 shrink-0 mt-0.5" />
-                <span>{error}</span>
+              <div className="mb-6 bg-red-950/40 border border-red-800/60 text-red-300 px-4 py-3 rounded-xl flex items-start gap-2.5 text-xs shadow-inner">
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                <span className="leading-relaxed">{error}</span>
               </div>
             )}
-            
-            <form onSubmit={handleSubmit}>
-              <div className="mb-6">
-                <label htmlFor="email" className="block text-sm font-medium mb-2">Email address</label>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">
+                  Email Address
+                </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail size={18} className="text-gray-500" />
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <Mail className="w-4 h-4 text-zinc-500" />
                   </div>
                   <input
-                    id="email"
                     type="email"
+                    required
+                    autoFocus
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="input pl-10"
-                    placeholder="you@example.com"
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (error) setError('');
+                    }}
+                    placeholder="creator@studio.com"
+                    className="luxury-input pl-10 text-sm"
                   />
                 </div>
               </div>
-              
-              <div className="mb-6">
+
+              <div>
                 <div className="flex justify-between items-center mb-2">
-                  <label htmlFor="password" className="block text-sm font-medium">Password</label>
-                  <Link to="/" className="text-sm text-indigo-400 hover:text-indigo-300">Forgot password?</Link>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-300">
+                    Password
+                  </label>
                 </div>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock size={18} className="text-gray-500" />
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <Lock className="w-4 h-4 text-zinc-500" />
                   </div>
                   <input
-                    id="password"
                     type="password"
+                    required
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="input pl-10"
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (error) setError('');
+                    }}
                     placeholder="••••••••"
+                    className="luxury-input pl-10 text-sm"
                   />
                 </div>
               </div>
-              
+
               <button
                 type="submit"
-                className={`btn btn-primary w-full flex justify-center ${isLoading ? 'opacity-80 cursor-not-allowed' : ''}`}
                 disabled={isLoading}
+                className="w-full btn-luxury btn-luxury-primary py-3 text-sm font-semibold shadow-lg shadow-indigo-600/25 mt-2"
               >
                 {isLoading ? (
-                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                ) : 'Log in'}
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Verifying Studio Access...</span>
+                  </>
+                ) : (
+                  <span>Sign in to Studio</span>
+                )}
               </button>
-              
-              <div className="mt-6 text-center">
-                <p className="text-gray-400">
-                  Don't have an account?{' '}
-                  <Link to="/signup" className="text-indigo-400 hover:text-indigo-300 font-medium">
-                    Sign up
-                  </Link>
-                </p>
-              </div>
             </form>
-          </div>
-        </div>
-        
-        {/* Right side - Image */}
-        <div className="hidden md:block md:w-1/2 bg-gradient-to-br from-indigo-900 to-gray-900 relative">
-          <div className="absolute inset-0 bg-black/40"></div>
-          <img 
-            src="https://images.pexels.com/photos/4062560/pexels-photo-4062560.jpeg"
-            alt="Recording studio"
-            className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
-          />
-          <div className="absolute inset-0 flex items-center justify-center p-10">
-            <div className="max-w-md text-center">
-              <h2 className="text-3xl font-bold mb-4">Create studio-quality content</h2>
-              <p className="text-gray-300">
-                Join thousands of podcasters, interviewers, and content creators making professional recordings with WaveStudio.
-              </p>
+
+            <div className="mt-8 pt-6 border-t border-white/[0.06] text-center text-xs text-zinc-400">
+              <span>Don't have a studio account yet? </span>
+              <Link
+                to="/signup"
+                className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors underline underline-offset-4"
+              >
+                Create Account
+              </Link>
             </div>
           </div>
         </div>
-      </div>
-      
+      </main>
+
       <Footer />
     </div>
   );

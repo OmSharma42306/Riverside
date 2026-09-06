@@ -82,3 +82,61 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
 - [Configuration Options](https://turborepo.com/docs/reference/configuration)
 - [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+
+
+<!-- 
+
+
+### Terminal 1: Run the App (Frontend, Backend, Web, & WebSocket)
+
+In the root repository folder:
+
+```powershell
+cd "c:\Users\mohan\Documents\clone projects\Riverside\repo"
+npm run dev
+```
+
+This single Turborepo command starts all 4 services:
+- **Frontend (Vite UI)**: [http://localhost:5173](http://localhost:5173)
+- **Web (Next.js)**: [http://localhost:3000](http://localhost:3000)
+- **Backend API (Express)**: `http://localhost:3001`
+- **WebSocket Layer**: `ws://localhost:8080`
+
+---
+
+### Terminal 2: Run the Background Worker (Video Merging)
+
+Open a second terminal window:
+
+```powershell
+cd "c:\Users\mohan\Documents\clone projects\Riverside\repo\apps\backend-server\dist\workers"
+node mergeWorker.js
+```
+
+*(Note: The merge worker connects to Redis at `localhost:6379` to process video upload jobs).*
+
+---
+
+### 📌 Quick Reference (If ever setting up on a fresh machine)
+If you ever clone or rebuild from scratch, the full sequence is:
+```powershell
+# 1. Install root dependencies
+npm install
+
+# 2. Generate Prisma client & sync Supabase
+cd packages/db
+npx prisma generate
+npx prisma db push
+tsc -b
+Copy-Item -Recurse -Force src\generated dist\
+
+# 3. Start dev servers
+cd ../..
+npm run dev
+
+# 4. Start worker (in a separate terminal)
+cd apps/backend-server/dist/workers
+node mergeWorker.js
+```
+
+ -->
