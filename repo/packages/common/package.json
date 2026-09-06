@@ -9,13 +9,16 @@
     "dev": "npm run build && node dist/index.js"
   },
   "devDependencies": {
-    "@repo/typescript-config":"*"
+    "@repo/typescript-config": "*"
   },
-  "exports":{
-    "./validation":"./dist/index.js"
+  "exports": {
+    "./validation": "./dist/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "zod": "^4.5.4"
+  }
 }

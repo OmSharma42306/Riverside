@@ -1,16 +1,15 @@
 import axios from "axios";
 
-const token = localStorage.getItem("JWT");
-
+const getAuthHeader = () => ({
+  Authorization: `Bearer ${localStorage.getItem("JWT")}`,
+});
 
 // Session api's
 export async function fetchAllSessions() {
   const response = await axios.get(
     `http://localhost:3001/api/v1/sessions/get-all-sessions`,
     {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getAuthHeader(),
     }
   );
   return response;
@@ -21,9 +20,7 @@ export async function createSession(sessionName: string) {
       `http://localhost:3001/api/v1/sessions/create-session`,
       { sessionName },
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeader(),
       }
     );
     return response;
@@ -32,9 +29,7 @@ export async function createSession(sessionName: string) {
 export async function joinSession(sessionCode:string|null){
     
     const response = await axios.post(`http://localhost:3001/api/v1/sessions/joinSession`,{sessionCode},{
-            headers:{
-                Authorization:`Bearer ${token}`
-            }
+            headers: getAuthHeader()
         });
 
     return response;
@@ -43,9 +38,7 @@ export async function joinSession(sessionCode:string|null){
 
 export async function getSession(sessionCode:string|null){
         const response = await axios.get(`http://localhost:3001/api/v1/sessions/get-session/${sessionCode}`,{
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
+          headers: getAuthHeader()
         })
         console.log(response.data.session.tracks);
     
@@ -71,9 +64,7 @@ export async function signUp(name:string,email:string,password:string){
 // Nsender & NReceiver api's
 export async function sendChunksToBackend(formData:any){
     const response = await axios.post(`http://localhost:3001/api/v1/recordings/chunks`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: getAuthHeader()
       });
     return response;
 }
@@ -81,9 +72,7 @@ export async function sendChunksToBackend(formData:any){
 export async function sendFinalCallToEndOfRecordingApi(roomName:string,userType:string,sessionId:string){
     const response = await axios.post(`http://localhost:3001/api/v1/recordings/merge-upload-s3`, 
         { sessionName: roomName,userType,sessionId }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: getAuthHeader()
       });
     return response;
 }
@@ -92,9 +81,7 @@ export async function sendFinalCallToEndOfRecordingApi(roomName:string,userType:
 export async function getAllVideosApi(sessionId:string){ 
     const response = await axios.get(`http://localhost:3001/api/v1/recordings/get-session-videos/${sessionId}`,
       {
-        headers:{
-          Authorization: `Bearer ${token}`
-        }
+        headers: getAuthHeader()
       }
     );
     return response;
