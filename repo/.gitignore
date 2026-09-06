@@ -1,42 +1,78 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # Dependencies
-node_modules
+node_modules/
 .pnp
 .pnp.js
 
-# Local env files
+# Environment & Secret Files (NEVER COMMIT SENSITIVE DATA)
 .env
+.env*
+!.env.example
+!.env.example.txt
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Testing
-coverage
+# Cloud & AWS Credentials
+*.csv
+credentials
+credentials.ini
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+id_rsa
+id_ed25519
 
-# Turbo
-.turbo
+# Media Uploads & Temporary Recording Chunks
+uploads/
+uploads2/
+**/uploads/
+**/uploads2/
+*.webm
+*.mp4
+*.mkv
+*.wav
+*.mp3
 
-# Vercel
-.vercel
-
-# Build Outputs
-.next/
+# Build & Compilation Outputs
+dist/
+**/dist/
+build/
+**/build/
 out/
-build
-dist
+.next/
 
+# Turbo Cache
+.turbo/
 
-# Debug
+# TypeScript Cache
+*.tsbuildinfo
+
+# Vercel & Deployment
+.vercel/
+
+# Logs & Debugging
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Misc
+# Editor & OS Artifacts
 .DS_Store
-*.pem
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# My Local Files 
+# Local Scratch / Temporary
 old_apis.ts
-
+scratch/

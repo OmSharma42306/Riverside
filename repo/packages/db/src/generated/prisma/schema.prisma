@@ -52,11 +52,3 @@ model JoinSession {
   user      User     @relation(fields: [userId], references: [id])
   sessions  Sessions @relation(fields: [sessionId], references: [id])
 }
-
-model AllTracks {
-  id            Int     @id @default(autoincrement())
-  userId        Int
-  sessionId     Int
-  senderTrack   String?
-  receiverTrack String?
-}

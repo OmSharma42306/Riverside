@@ -21,8 +21,12 @@ router.post('/create-session',authMiddleware,async(req:authRequest,res:Response)
                     
     res.status(200).json({"sessionid":session.id,"sessionCode":sessionCode});
     return;
-}catch(error){
-    res.status(400).json({msg:error});
+}catch(error: any){
+    if (error?.code === "P2002") {
+        res.status(400).json({ msg: `A session named "${sessionName}" already exists. Please choose a different name.` });
+        return;
+    }
+    res.status(400).json({ msg: error?.message || "Failed to create session" });
     return;
 }
 });
