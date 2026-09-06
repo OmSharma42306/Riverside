@@ -1,400 +1,311 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mic, Plus, Video, Clock, Search, Settings, Filter, Play, Edit, Trash2, Download } from 'lucide-react';
+import {
+  Mic,
+  Plus,
+  Video,
+  Search,
+  Radio,
+  Copy,
+  CheckCircle2,
+  Layers,
+  HardDrive,
+  FolderOpen,
+} from 'lucide-react';
 import Header from '@repo/ui/Header';
+import Footer from '@repo/ui/Footer';
 import { fetchAllSessions } from '../api/api';
 import type { SessionType } from '../types';
 
 const Dashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('recent');
   const navigate = useNavigate();
-  const [sessions,setSessions] = useState<SessionType[]>([]);
-  const recordings = [
-    {
-      id: 1,
-      title: 'Interview with Dr. Sarah Johnson',
-      date: 'Apr 12, 2025',
-      duration: '45:22',
-      type: 'audio',
-      status: 'completed'
-    },
-    {
-      id: 2,
-      title: 'Weekly Podcast Episode 23',
-      date: 'Apr 8, 2025',
-      duration: '32:15',
-      type: 'video',
-      status: 'completed'
-    },
-    {
-      id: 3,
-      title: 'Marketing Team Discussion',
-      date: 'Apr 3, 2025',
-      duration: '51:07',
-      type: 'video',
-      status: 'editing'
-    },
-    {
-      id: 4,
-      title: 'Product Launch Planning',
-      date: 'Mar 28, 2025',
-      duration: '28:45',
-      type: 'audio',
-      status: 'completed'
-    },
-    {
-      id: 5,
-      title: 'Guest Interview - Tech Trends',
-      date: 'Mar 22, 2025',
-      duration: '39:18',
-      type: 'video',
-      status: 'completed'
-    },
-  ];
-  useEffect(()=>{
-    async function runFetchAllSessions(){
-      const response = await fetchAllSessions();
-      console.log(response.data);
-      setSessions(response.data.sessions);
+  const [sessions, setSessions] = useState<SessionType[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function runFetchAllSessions() {
+      setIsLoading(true);
+      try {
+        const response = await fetchAllSessions();
+        if (response.data && response.data.sessions) {
+          setSessions(response.data.sessions);
+        }
+      } catch (err) {
+        console.error('Failed to fetch sessions:', err);
+      } finally {
+        setIsLoading(false);
+      }
     }
     runFetchAllSessions();
-  },[])
+  }, []);
 
-  const handleRecordingAction = async (action: string, id: number) => {
-    console.log(`${action} recording ${id}`);
-    
+  const handleCopy = (code: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+    setTimeout(() => setCopiedCode(null), 2000);
   };
 
+  const filteredSessions = sessions.filter(
+    (s) =>
+      s.sessionName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.sessionCode?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="min-h-screen bg-[#07080b] text-slate-100 flex flex-col justify-between font-sans relative overflow-hidden">
       <Header />
-      
-      <main className="flex-grow bg-gray-900 pt-16">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8">
+
+      {/* Atmospheric ambient glows */}
+      <div className="absolute top-[80px] left-1/2 -translate-x-1/2 w-[900px] h-[350px] bg-indigo-600/10 rounded-full blur-[160px] pointer-events-none" />
+
+      <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10 space-y-10">
+        {/* Page Top Banner */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-white/[0.06]">
+          <div>
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Broadcast Control Center</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
+              Studio Dashboard
+            </h1>
+            <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+              Manage live recording rooms, track archives, and production sessions.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => navigate('/joinSession')}
+              className="btn-luxury btn-luxury-secondary text-xs py-2.5 px-4 flex items-center gap-2"
+            >
+              <Radio className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Join via Code</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/createSession')}
+              className="btn-luxury btn-luxury-primary text-xs py-2.5 px-5 flex items-center gap-2 shadow-lg shadow-indigo-600/20"
+            >
+              <Plus className="w-4 h-4" />
+              <span>New Studio Session</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Live Studio Metric Tiles */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="obsidian-card p-6 border-white/[0.08]">
+            <div className="flex items-center justify-between mb-3 text-zinc-400">
+              <span className="text-xs font-semibold uppercase tracking-wider">Total Sessions</span>
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                <Mic className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-3xl font-extrabold text-white tracking-tight">
+              {sessions.length}
+            </div>
+            <p className="text-[11px] text-zinc-500 mt-1">Multi-track rooms created</p>
+          </div>
+
+          <div className="obsidian-card p-6 border-white/[0.08]">
+            <div className="flex items-center justify-between mb-3 text-zinc-400">
+              <span className="text-xs font-semibold uppercase tracking-wider">Master Resolution</span>
+              <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                <Video className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-3xl font-extrabold text-white tracking-tight">
+              4K 60FPS
+            </div>
+            <p className="text-[11px] text-emerald-400 mt-1 flex items-center gap-1 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Lossless Local Capture
+            </p>
+          </div>
+
+          <div className="obsidian-card p-6 border-white/[0.08]">
+            <div className="flex items-center justify-between mb-3 text-zinc-400">
+              <span className="text-xs font-semibold uppercase tracking-wider">Storage Pipeline</span>
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <HardDrive className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-3xl font-extrabold text-white tracking-tight">
+              AWS S3
+            </div>
+            <p className="text-[11px] text-zinc-500 mt-1">Direct S3 bucket sync</p>
+          </div>
+
+          <div className="obsidian-card p-6 border-white/[0.08]">
+            <div className="flex items-center justify-between mb-3 text-zinc-400">
+              <span className="text-xs font-semibold uppercase tracking-wider">Merge Worker</span>
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                <Layers className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-3xl font-extrabold text-white tracking-tight">
+              BullMQ
+            </div>
+            <p className="text-[11px] text-zinc-500 mt-1">Background chunk pipeline</p>
+          </div>
+        </div>
+
+        {/* Sessions Workspace */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-              <p className="text-gray-400">Manage your recordings, projects, and media</p>
+              <h2 className="text-lg font-bold text-white tracking-tight">Your Studio Sessions</h2>
+              <p className="text-xs text-zinc-400">Select a session to enter the recording booth or inspect merged master tracks.</p>
             </div>
-            
-            <div className="flex space-x-3 mt-4 md:mt-0">
-              <button className="btn btn-outline flex items-center">
-                <Settings size={18} className="mr-2" />
-                Settings
-              </button>
-              <button className="btn btn-primary flex items-center" onClick={()=>{
-                navigate("/createSession")
-              }}>
-                <Plus size={18} className="mr-2" />
-                New Session
-              </button>
-               <button className="btn btn-primary flex items-center" onClick={()=>{
-                navigate("/joinSession")
-              }}>
-                <Plus size={18} className="mr-2" />
-                Join Via Session Code
-              </button>
-            </div>
-          </div>
-          
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="card bg-indigo-900/30 border border-indigo-800">
-              <h3 className="text-lg font-medium mb-3 text-gray-300">Total Recordings</h3>
-              <div className="flex items-end justify-between">
-                <div className="text-3xl font-bold">28</div>
-                <Mic size={28} className="text-indigo-400" />
-              </div>
-            </div>
-            
-            <div className="card bg-purple-900/30 border border-purple-800">
-              <h3 className="text-lg font-medium mb-3 text-gray-300">Recording Hours</h3>
-              <div className="flex items-end justify-between">
-                <div className="text-3xl font-bold">16.5</div>
-                <Clock size={28} className="text-purple-400" />
-              </div>
-            </div>
-            
-            <div className="card bg-blue-900/30 border border-blue-800">
-              <h3 className="text-lg font-medium mb-3 text-gray-300">Studio Quality</h3>
-              <div className="flex items-end justify-between">
-                <div className="text-3xl font-bold">1080p</div>
-                <Video size={28} className="text-blue-400" />
-              </div>
-            </div>
-            
-            <div className="card bg-green-900/30 border border-green-800">
-              <h3 className="text-lg font-medium mb-3 text-gray-300">Storage Used</h3>
-              <div className="flex items-end justify-between">
-                <div className="text-3xl font-bold">3.8 GB</div>
-                <div className="w-8 h-8 rounded-full bg-green-800/50 flex items-center justify-center">
-                  <div className="w-5 h-5 rounded-full bg-green-400"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Search and Filters */}
-          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between mb-6 gap-4">
-            <div className="relative flex-grow max-w-md">
+
+            {/* Search Input */}
+            <div className="relative w-full sm:w-72">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search size={18} className="text-gray-500" />
+                <Search className="w-4 h-4 text-zinc-500" />
               </div>
               <input
                 type="text"
-                placeholder="Search recordings..."
-                className="input pl-10"
+                placeholder="Search sessions..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 bg-white/[0.03] border border-white/[0.08] rounded-xl text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
               />
             </div>
-            
-            <div className="flex items-center space-x-3">
-              <button className="btn btn-secondary flex items-center">
-                <Filter size={18} className="mr-2" />
-                Filter
-              </button>
-              
-              <div className="border-l border-gray-700 h-8 hidden md:block"></div>
-              
-              <div className="bg-gray-800 rounded-lg p-1 flex">
-                <button
-                  className={`px-4 py-2 rounded-md text-sm font-medium ${
-                    activeTab === 'recent' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'
-                  }`}
-                  onClick={() => setActiveTab('recent')}
-                >
-                  Recent
-                </button>
-                <button
-                  className={`px-4 py-2 rounded-md text-sm font-medium ${
-                    activeTab === 'editing' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'
-                  }`}
-                  onClick={() => setActiveTab('editing')}
-                >
-                  Editing
-                </button>
-                <button
-                  className={`px-4 py-2 rounded-md text-sm font-medium ${
-                    activeTab === 'archived' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'
-                  }`}
-                  onClick={() => setActiveTab('archived')}
-                >
-                  Archived
-                </button>
-              </div>
-            </div>
           </div>
-          
-          {/* Recordings Table */}
-          {/* <div className="bg-gray-800 rounded-xl overflow-hidden mb-8">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-850">
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Title</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Duration</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Type</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-4 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-700">
-                  {recordings.map((recording) => (
-                    <tr key={recording.id} className="hover:bg-gray-750 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className={`flex-shrink-0 w-10 h-10 rounded-lg ${
-                            recording.type === 'video' ? 'bg-blue-900/30' : 'bg-indigo-900/30'
-                          } flex items-center justify-center`}>
-                            {recording.type === 'video' ? (
-                              <Video size={18} className="text-blue-400" />
-                            ) : (
-                              <Mic size={18} className="text-indigo-400" />
-                            )}
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium">{recording.title}</div>
+
+          {/* Sessions List */}
+          <div className="obsidian-card border-white/[0.08] overflow-hidden">
+            {isLoading ? (
+              <div className="py-16 text-center space-y-3">
+                <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-xs text-zinc-400">Loading your production sessions...</p>
+              </div>
+            ) : filteredSessions && filteredSessions.length > 0 ? (
+              <div className="divide-y divide-white/[0.06]">
+                {filteredSessions.map((session) => (
+                  <div
+                    key={session.id.toString()}
+                    className="p-5 sm:p-6 hover:bg-white/[0.02] transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+                  >
+                    {/* Session Info */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold text-sm">
+                          <Mic className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h3 className="text-base font-bold text-white group-hover:text-indigo-300 transition-colors">
+                            {session.sessionName}
+                          </h3>
+                          <div className="flex flex-wrap items-center gap-2 mt-0.5 text-xs text-zinc-400">
+                            <span className="font-mono text-[11px] text-zinc-500">
+                              ID: #{session.id}
+                            </span>
+                            <span className="text-zinc-600">•</span>
+                            <span className="font-mono text-[11px] bg-white/[0.04] px-2 py-0.5 rounded border border-white/[0.06] text-zinc-300">
+                              {session.sessionCode}
+                            </span>
+                            <button
+                              onClick={() => handleCopy(session.sessionCode)}
+                              className="inline-flex items-center gap-1 text-[11px] font-medium text-indigo-400 hover:text-indigo-300 transition-colors ml-1 cursor-pointer"
+                              title="Copy session code to clipboard"
+                            >
+                              {copiedCode === session.sessionCode ? (
+                                <>
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                                  <span className="text-emerald-400">Copied</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-3.5 h-3.5" />
+                                  <span>Copy Code</span>
+                                </>
+                              )}
+                            </button>
                           </div>
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{recording.date}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{recording.duration}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          recording.type === 'video' 
-                            ? 'bg-blue-900/20 text-blue-400' 
-                            : 'bg-indigo-900/20 text-indigo-400'
-                        }`}>
-                          {recording.type === 'video' ? 'Video' : 'Audio'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          recording.status === 'completed' 
-                            ? 'bg-green-900/20 text-green-400' 
-                            : 'bg-yellow-900/20 text-yellow-400'
-                        }`}>
-                          {recording.status === 'completed' ? 'Completed' : 'Editing'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex items-center justify-end space-x-3">
-                          <button 
-                            onClick={() => handleRecordingAction('play', recording.id)}
-                            className="text-gray-400 hover:text-indigo-400 transition-colors"
-                          >
-                            <Play size={18} />
-                          </button>
-                          <button 
-                            onClick={() => handleRecordingAction('edit', recording.id)}
-                            className="text-gray-400 hover:text-indigo-400 transition-colors"
-                          >
-                            <Edit size={18} />
-                          </button>
-                          <button 
-                            onClick={() => handleRecordingAction('download', recording.id)}
-                            className="text-gray-400 hover:text-indigo-400 transition-colors"
-                          >
-                            <Download size={18} />
-                          </button>
-                          <button 
-                            onClick={() => handleRecordingAction('delete', recording.id)}
-                            className="text-gray-400 hover:text-red-400 transition-colors"
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          
-          */}
-  
-          <div className="bg-gray-800 rounded-xl overflow-hidden mb-8">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-850">
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Title</th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date</th>
-                    
-                  </tr>
-                </thead>
-                
-                <tbody className="divide-y divide-gray-700">
-                  { sessions && sessions.length > 0 ? sessions.map((session) => (
-                    <tr key={session.id.toString()} className="hover:bg-gray-750 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                         
-                          <div className="ml-4">
-                            <div className="text-sm font-medium">{session.sessionName}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{session.sessionCode}</td>  
-                  <button onClick={()=>navigate('/recentSession',{state:{sessionId:session.id}})}>Open Session</button>
-                  </tr>
-                  
-                  )): <tr className="bg-gray-850">
-                    <td className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">No Recordings.</td>
-                    <td className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">No Recordindwqgs.</td>
-                    
-                    
-                  </tr>} 
-                  
-                </tbody>
-              </table>
-            </div>
-          </div>
-          
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="card">
-              <h3 className="text-lg font-medium mb-4">Quick Start</h3>
-              <div className="space-y-3">
-                <button className="w-full btn btn-secondary flex items-center justify-center">
-                  <Mic size={18} className="mr-2" />
-                  New Audio Recording
-                </button>
-                <button className="w-full btn btn-secondary flex items-center justify-center">
-                  <Video size={18} className="mr-2" />
-                  New Video Recording
-                </button>
-                <button className="w-full btn btn-outline flex items-center justify-center">
-                  <Plus size={18} className="mr-2" />
-                  Schedule Session
-                </button>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap items-center gap-2.5 pt-2 md:pt-0">
+                      {/* Host Broadcast */}
+                      <button
+                        onClick={() =>
+                          navigate('/nsender', {
+                            state: { sessionCode: session.sessionCode, sessionid: session.id },
+                          })
+                        }
+                        className="btn-luxury btn-luxury-primary text-xs py-2 px-3.5 flex items-center gap-1.5"
+                        title="Enter live broadcast as Host"
+                      >
+                        <Radio className="w-3.5 h-3.5 animate-pulse" />
+                        <span>Host Studio</span>
+                      </button>
+
+                      {/* Guest Room */}
+                      <button
+                        onClick={() =>
+                          navigate('/nreceiver', {
+                            state: { sessionCode: session.sessionCode, sessionId: session.id },
+                          })
+                        }
+                        className="btn-luxury btn-luxury-secondary text-xs py-2 px-3 flex items-center gap-1.5"
+                        title="Enter live broadcast as Guest"
+                      >
+                        <Video className="w-3.5 h-3.5 text-zinc-400" />
+                        <span>Guest Room</span>
+                      </button>
+
+                      {/* View S3 Recordings */}
+                      <button
+                        onClick={() =>
+                          navigate('/recentSession', {
+                            state: { sessionId: session.id },
+                          })
+                        }
+                        className="btn-luxury btn-luxury-secondary text-xs py-2 px-3 flex items-center gap-1.5"
+                        title="Inspect and download uploaded master tracks"
+                      >
+                        <FolderOpen className="w-3.5 h-3.5 text-indigo-400" />
+                        <span>Recordings</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-            
-            <div className="card">
-              <h3 className="text-lg font-medium mb-4">Recent Activity</h3>
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <div className="w-2 h-2 rounded-full bg-green-500 mt-2 mr-3"></div>
-                  <div>
-                    <p className="text-sm">Completed recording <span className="text-indigo-400">"Interview with Dr. Sarah Johnson"</span></p>
-                    <p className="text-xs text-gray-400">2 hours ago</p>
-                  </div>
+            ) : (
+              /* High-End Empty State */
+              <div className="py-20 px-4 text-center space-y-4">
+                <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mx-auto shadow-inner">
+                  <FolderOpen className="w-8 h-8" />
                 </div>
-                <div className="flex items-start">
-                  <div className="w-2 h-2 rounded-full bg-yellow-500 mt-2 mr-3"></div>
-                  <div>
-                    <p className="text-sm">Started editing <span className="text-indigo-400">"Marketing Team Discussion"</span></p>
-                    <p className="text-xs text-gray-400">Yesterday at 3:45 PM</p>
-                  </div>
+                <div className="space-y-1 max-w-sm mx-auto">
+                  <h3 className="text-base font-bold text-white">No Studio Sessions Found</h3>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    {searchTerm
+                      ? `No sessions matching "${searchTerm}". Try a different search.`
+                      : 'Launch your first multi-track recording session to get started.'}
+                  </p>
                 </div>
-                <div className="flex items-start">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 mr-3"></div>
-                  <div>
-                    <p className="text-sm">Exported <span className="text-indigo-400">"Weekly Podcast Episode 23"</span></p>
-                    <p className="text-xs text-gray-400">Yesterday at 11:20 AM</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="card">
-              <h3 className="text-lg font-medium mb-4">Storage</h3>
-              <div className="space-y-3">
                 <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span>Used</span>
-                    <span>3.8 GB / 10 GB</span>
-                  </div>
-                  <div className="w-full bg-gray-700 rounded-full h-2.5">
-                    <div className="bg-indigo-500 h-2.5 rounded-full" style={{ width: '38%' }}></div>
-                  </div>
-                </div>
-                <div className="pt-2">
-                  <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="text-gray-400">Video recordings</span>
-                    <span>2.5 GB</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm mb-2">
-                    <span className="text-gray-400">Audio recordings</span>
-                    <span>1.2 GB</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-400">Other files</span>
-                    <span>0.1 GB</span>
-                  </div>
-                </div>
-                <div className="pt-2">
-                  <button className="w-full btn btn-outline flex items-center justify-center text-sm">
-                    Upgrade Storage
+                  <button
+                    onClick={() => navigate('/createSession')}
+                    className="btn-luxury btn-luxury-primary text-xs py-2.5 px-5 inline-flex items-center gap-2 mt-2"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Create Your First Session</span>
                   </button>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

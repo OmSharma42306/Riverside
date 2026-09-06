@@ -237,7 +237,7 @@ export default function JoinSession() {
                       if (error) setError(null);
                     }}
                     placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000"
-                    className="w-full pl-11 pr-4 py-3.5 bg-gray-950/60 border border-gray-700/80 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-100 placeholder-gray-500 text-sm font-mono transition-all duration-200 outline-none shadow-inner"
+                    className="w-full pl-11 pr-4 py-3.5 bg-gray-950/60 border border-gray-700/80 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-100 placeholder-gray-500 text-sm font-mono transition-all duration-200 outline-none shadow-inner"
                   />
                 </div>
                 <p className="mt-1.5 text-xs text-gray-500">
@@ -249,7 +249,7 @@ export default function JoinSession() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full py-3.5 px-6 rounded-xl font-semibold text-sm text-white shadow-lg transition-all duration-200 flex items-center justify-center gap-2 ${
+                className={`w-full py-3.5 px-6 rounded-lg font-semibold text-sm text-white shadow-lg transition-all duration-200 flex items-center justify-center gap-2 ${
                   isLoading
                     ? "bg-indigo-800/60 cursor-not-allowed opacity-80"
                     : "bg-gradient-to-r from-indigo-600 via-indigo-600 to-purple-600 hover:from-indigo-500 hover:via-indigo-500 hover:to-purple-500 shadow-indigo-600/25 active:scale-[0.99]"
